@@ -1,10 +1,22 @@
-import { Text } from '@react-navigation/elements';
-import { StyleSheet, View } from 'react-native';
+
+import MovieItem from '@/components/Movie/MovieItem';
+import { useMovieFakeApi } from '@/hooks/useMovieFakeApi';
+import {  FlatList, StyleSheet, View } from 'react-native';
 
 export function Updates() {
+  const { movies, refresh, pullToRefresh } = useMovieFakeApi();
+
   return (
     <View style={styles.container}>
-      <Text>Updates Screen</Text>
+      <FlatList
+        data={movies}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <MovieItem {...item} />}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        refreshing={refresh}
+        onRefresh={pullToRefresh}
+        onEndReachedThreshold={0.5}
+      />
     </View>
   );
 }
@@ -12,8 +24,7 @@ export function Updates() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 10,
+    padding: 10,
+    backgroundColor: '#fff',
   },
 });
