@@ -1,15 +1,27 @@
-import { Button, Text } from '@react-navigation/elements';
-import { StyleSheet, View } from 'react-native';
+import MovieItem from '@/components/Movie/MovieItem';
+import { useMovies } from '@/hooks/useMovies';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 export function Home() {
+  const { movies, refresh, pullToRefresh, loadMoreMovie,loadingMore } = useMovies();
+
   return (
     <View style={styles.container}>
-      <Text>Home Screen</Text>
-      <Text>Open up 'src/App.tsx' to start working on your app!</Text>
-      <Button screen="Profile" params={{ user: 'jane' }}>
-        Go to Profile
-      </Button>
-      <Button screen="Settings">Go to Settings</Button>
+      <FlatList
+        data={movies}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <MovieItem {...item} />}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        refreshing={refresh}
+        onRefresh={pullToRefresh}
+        onEndReached={loadMoreMovie}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          loadingMore ? (
+            <ActivityIndicator style={{ marginVertical: 16 }} />
+          ) : null
+        }
+      />
     </View>
   );
 }
@@ -17,8 +29,7 @@ export function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 10,
+    padding: 10,
+    backgroundColor: '#fff',
   },
 });

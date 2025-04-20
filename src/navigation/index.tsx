@@ -7,29 +7,24 @@ import {
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image } from 'react-native';
 import bell from '../assets/bell.png';
-import newspaper from '../assets/newspaper.png';
 import { Home } from './screens/Home';
 import { Profile } from './screens/Profile';
 import { Settings } from './screens/Settings';
 import { Updates } from './screens/Updates';
 import { NotFound } from './screens/NotFound';
+import { HomeIcon } from '../assets/svgIcons';
+import MovieDetail from './screens/MovieDetail';
+import { Pagination } from './screens/Pagination';
+import EditMovieModal from '@/modals/EditMovieModal';
+
 
 const HomeTabs = createBottomTabNavigator({
   screens: {
     Home: {
       screen: Home,
       options: {
-        title: 'Feed',
-        tabBarIcon: ({ color, size }) => (
-          <Image
-            source={newspaper}
-            tintColor={color}
-            style={{
-              width: size,
-              height: size,
-            }}
-          />
-        ),
+        title: 'Home',
+        tabBarIcon: ({ color }) => <HomeIcon color={color} />,
       },
     },
     Updates: {
@@ -47,6 +42,13 @@ const HomeTabs = createBottomTabNavigator({
         ),
       },
     },
+    Pagination: {
+      screen: Pagination,
+      options: {
+        title: 'Pagination',
+        tabBarIcon: ({ color }) => <HomeIcon color={color} />,
+      },
+    }
   },
 });
 
@@ -90,6 +92,32 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: '*',
       },
+    },
+    MovieDetail: {
+      screen: MovieDetail,
+      options: {
+        headerShown: true,
+      },
+      linking: {
+        path: 'movie/:id',
+        parse: {
+          id: (id) => Number(id),
+        },
+        stringify: {
+          id: (id: number) => `${id}`,
+        },
+      },
+    },
+    EditMovieModal: {
+      screen: EditMovieModal,
+      options: ({ navigation }) => ({
+        presentation: 'modal',
+        headerRight: () => (
+          <HeaderButton onPress={navigation.goBack}>
+            <Text>Close</Text>
+          </HeaderButton>
+        ),
+      }),
     },
   },
 });
