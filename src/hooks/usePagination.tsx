@@ -1,5 +1,5 @@
 import { Movie, MovieListResponse } from '@/models/movie.model';
-import { getAllMovie } from '@/services/movie.services';
+import { getAllMovie, searchMovie } from '@/services/movie.services';
 import { useEffect, useState } from 'react';
 
 export const usePagination = () => {
@@ -16,10 +16,10 @@ export const usePagination = () => {
       setRefresh(false);
     }, 2000);
   };
-  const fetchMovies = async (pageToFetch: number, query: string = '') => {
+  const fetchMovies = async (pageToFetch: number) => {
     try {
       setLoading(true);
-      const response: MovieListResponse = await getAllMovie(pageToFetch, query);
+      const response: MovieListResponse = await getAllMovie(pageToFetch);
       setMovies(response.results);
       setTotalPages(response.total_pages);
     } catch (error) {
@@ -30,7 +30,7 @@ export const usePagination = () => {
   };
 
   useEffect(() => {
-    fetchMovies(page, searchTerm);
+    fetchMovies(page);
   }, [page]); 
 
   const goToPage = (pageNum: number) => {
@@ -39,18 +39,16 @@ export const usePagination = () => {
     }
   };
 
+  const handleSearchMovie = async () => {
+    const response: MovieListResponse = await searchMovie(searchTerm)
+    setMovies(response.results)
+  }
+
   const onChangeSearchTerm = (value: string) => {
     setSearchTerm(value);
     // setPage(1)
+    searchTerm === '' ? fetchMovies(1) : handleSearchMovie()
   };
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      setPage(1); 
-      fetchMovies(1, searchTerm);
-    },1000);
-  
-    return () => clearTimeout(delay);
-  }, [searchTerm]);
   return {
     movies,
     page,

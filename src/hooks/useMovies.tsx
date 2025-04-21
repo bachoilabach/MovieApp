@@ -28,7 +28,7 @@ export const useMovies = () => {
 
   const handleGetAllMovie = async (pageToFetch: number) => {
     try {
-      const response: MovieListResponse = await getAllMovie(pageToFetch,'');
+      const response: MovieListResponse = await getAllMovie(pageToFetch);
       setMovies((prev) => [...prev, ...response.results]);
       setHasMore(response.page < response.total_pages);
     } catch (error) {

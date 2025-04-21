@@ -3,12 +3,10 @@ import http from '../config/axios';
 import axios from 'axios';
 
 export const getAllMovie = async (
-  page: number = 1,
-  query: string
+  page: number = 1
 ): Promise<MovieListResponse[]> => {
   try {
-    console.log(query)
-    const response = await http.get(`/movie/popular?page=${page}&query=${query}`);
+    const response = await http.get(`/movie/popular?page=${page}`);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -26,7 +24,22 @@ export const getMovieVideos = async (id: number) => {
   return response.data.results;
 };
 
-export const getMovieFakeApi = async ()=> {
+export const searchMovie = async (
+  query: string
+): Promise<MovieListResponse[]> => {
+  try {
+    const response = await http.get('/search/movie', {
+      params: {
+        query: query,
+      },
+    });
+    return response.data
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getMovieFakeApi = async () => {
   try {
     const response = await axios.get('http://192.168.1.11:3001/movies');
     return response.data;
@@ -38,7 +51,10 @@ export const getMovieFakeApi = async ()=> {
 
 export const updateMovieFakeApi = async (id: number, data: any) => {
   try {
-    const response = await axios.put(`http://192.168.1.11:3001/movies/${id}`, data);
+    const response = await axios.put(
+      `http://192.168.1.11:3001/movies/${id}`,
+      data
+    );
     return response.data;
   } catch (error) {
     console.error('Update error:', error);
