@@ -1,16 +1,20 @@
 import { Movie, MovieDetail, MovieListResponse } from '@/models/movie.model';
 import http from '../config/axios';
 import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 export const getAllMovie = async (
   page: number = 1
-): Promise<MovieListResponse[]> => {
+): Promise<MovieListResponse> => {
   try {
     const response = await http.get(`/movie/popular?page=${page}`);
     return response.data;
   } catch (error) {
-    console.log(error);
-    return [];
+    Toast.show({
+      type: 'error',
+      text1: String(error)
+    })
+    return { results: [], page: 0, total_pages: 0, total_results: 0 };
   }
 };
 
@@ -25,23 +29,25 @@ export const getMovieVideos = async (id: number) => {
 };
 
 export const searchMovie = async (
+  page: number,
   query: string
-): Promise<MovieListResponse[]> => {
+): Promise<MovieListResponse> => {
   try {
     const response = await http.get('/search/movie', {
       params: {
         query: query,
+        page: page
       },
     });
     return response.data
   } catch (error) {
-    return [];
+    return { results: [], page: 0, total_pages: 0, total_results: 0 };
   }
 };
 
 export const getMovieFakeApi = async () => {
   try {
-    const response = await axios.get('http://10.10.113.26:3001/movies');
+    const response = await axios.get('http://10.10.112.140:3001/movies');
     return response.data;
   } catch (error) {
     console.log(error);
@@ -52,7 +58,7 @@ export const getMovieFakeApi = async () => {
 export const updateMovieFakeApi = async (id: number, data: any) => {
   try {
     const response = await axios.put(
-      `http://10.10.113.26:3001/movies/${id}`,
+      `http://10.10.112.140:3001/movies/${id}`,
       data
     );
     return response.data;

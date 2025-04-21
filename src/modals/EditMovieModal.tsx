@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Props } from '@/navigation/screens/MovieDetail';
 import { useEditMovie } from '@/hooks/useEditMovie';
 
@@ -19,40 +19,40 @@ const EditMovieModal = ({ route }: Props) => {
       <Text style={styles.label}>Title</Text>
       <TextInput
         style={styles.input}
-        value={movie?.title}
+        value={movie.title}
         onChangeText={(text) => handleChangeInput('title', text)}
       />
-      {errors?.title && <Text style={styles.errorText}>{errors.title}</Text>}
+      {errors.title && <Text style={styles.errorText}>{errors.title}</Text>}
 
       <Text style={styles.label}>Tagline</Text>
       <TextInput
         style={styles.input}
-        value={movie?.tagline}
+        value={movie.tagline}
         onChangeText={(text) => handleChangeInput('tagline', text)}
       />
-      {errors?.tagline && (
+      {errors.tagline && (
         <Text style={styles.errorText}>{errors.tagline}</Text>
       )}
 
       <Text style={styles.label}>Original Language</Text>
       <TextInput
         style={styles.input}
-        value={movie?.original_language}
+        value={movie.original_language}
         onChangeText={(text) => handleChangeInput('original_language', text)}
       />
-      {errors?.original_language && (
+      {errors.original_language && (
         <Text style={styles.errorText}>{errors.original_language}</Text>
       )}
 
       <Text style={styles.label}>Overview</Text>
       <TextInput
         style={[styles.input, styles.textArea]}
-        value={movie?.overview}
+        value={movie.overview}
         onChangeText={(text) => handleChangeInput('overview', text)}
         multiline
         numberOfLines={4}
       />
-      {errors?.overview && (
+      {errors.overview && (
         <Text style={styles.errorText}>{errors.overview}</Text>
       )}
 

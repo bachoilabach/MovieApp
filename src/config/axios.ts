@@ -1,6 +1,7 @@
 
 import { API_KEY } from '@env';
 import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 const http = axios.create({
   baseURL: 'https://api.themoviedb.org/3',
@@ -22,6 +23,10 @@ http.interceptors.request.use(
     return config;
   },
   (error) => {
+    Toast.show({
+      type: 'error',
+      text1: error
+    })
     return Promise.reject(error);
   }
 );

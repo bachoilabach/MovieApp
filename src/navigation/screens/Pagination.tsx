@@ -15,43 +15,46 @@ export function Pagination() {
     movies,
     page,
     totalPages,
-    loading,
+    isUpdating,
     goToPage,
-    refresh,
     pullToRefresh,
     searchTerm,
-    onChangeSearchTerm,
+    setSearchTerm,
   } = usePagination();
-  if (loading) return <ActivityIndicator style={{ marginTop: 20 }} />;
   return (
     <View style={styles.container}>
       <Text style={styles.searchText}>Search</Text>
       <TextInput
         style={styles.searchTerm}
         value={searchTerm}
-        onChangeText={onChangeSearchTerm}
+        onChangeText={(text) => setSearchTerm(text)}
       />
-      <FlatList
-        data={movies}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <MovieItem {...item} />}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        refreshing={refresh}
-        onRefresh={pullToRefresh}
-      />
-
-      <View style={styles.pagination}>
-        <Button
-          title="Prev"
-          disabled={page === 1}
-          onPress={() => goToPage(page - 1)}
-        />
-        <Text style={styles.pageText}>{`${page} / ${totalPages}`}</Text>
-        <Button
-          title="Next"
-          disabled={page === totalPages}
-          onPress={() => goToPage(page + 1)}
-        />
+      <View style={{ flex: 1, justifyContent: 'space-between' }}>
+        {isUpdating.isLoading ? (
+          <ActivityIndicator style={{ marginTop: 20 }} />
+        ) : (
+          <FlatList
+            data={movies}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <MovieItem {...item} />}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            refreshing={isUpdating.isRefresh}
+            onRefresh={pullToRefresh}
+          />
+        )}
+        <View style={styles.pagination}>
+          <Button
+            title="Prev"
+            disabled={page === 1}
+            onPress={() => goToPage(page - 1)}
+          />
+          <Text style={styles.pageText}>{`${page} / ${totalPages}`}</Text>
+          <Button
+            title="Next"
+            disabled={page === totalPages}
+            onPress={() => goToPage(page + 1)}
+          />
+        </View>
       </View>
     </View>
   );

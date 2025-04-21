@@ -1,66 +1,86 @@
 import { Movie, MovieListResponse } from '@/models/movie.model';
 import { getAllMovie, searchMovie } from '@/services/movie.services';
 import { useEffect, useState } from 'react';
-
+import Toast from 'react-native-toast-message';
+type Update = {
+  isRefresh: boolean;
+  isLoading: boolean;
+};
 export const usePagination = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [refresh, setRefresh] = useState<boolean>(false);
+  const [isUpdating, setIsUpdating] = useState<Update>({
+    isLoading: false,
+    isRefresh: false,
+  });
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const pullToRefresh = () => {
-    setRefresh(true);
-    setPage(1);
-    setTimeout(() => {
-      setRefresh(false);
-    }, 2000);
+  const pullToRefresh = async() => {
+    setIsUpdating((prev) => ({ ...prev, isRefresh: true }));
+    await fetchMovies(1)
+    setPage(1)
+    setIsUpdating((prev) => ({ ...prev, isRefresh: false }));
   };
   const fetchMovies = async (pageToFetch: number) => {
     try {
-      setLoading(true);
-      const response: MovieListResponse = await getAllMovie(pageToFetch);
-      setMovies(response.results);
-      setTotalPages(response.total_pages);
+      setIsUpdating((prev) => ({ ...prev, isLoading: true }));
+      const responses: MovieListResponse = await getAllMovie(pageToFetch);
+      setMovies(responses.results);
+      setTotalPages(responses.total_pages);
     } catch (error) {
-      console.error('Failed to fetch movies:', error);
+      Toast.show({
+        type: 'error',
+        text1: String(error),
+      });
     } finally {
-      setLoading(false);
+      setIsUpdating((prev) => ({ ...prev, isLoading: false }));
     }
   };
 
   useEffect(() => {
     fetchMovies(page);
-  }, [page]);
+  }, []);
 
   const goToPage = (pageNum: number) => {
     if (pageNum >= 1 && pageNum <= totalPages) {
       setPage(pageNum);
+      if (searchTerm === '') {
+        fetchMovies(pageNum);
+      } else {
+        handleSearchMovie(pageNum);
+      }
     }
   };
 
-  const handleSearchMovie = async () => {
-    const response: MovieListResponse = await searchMovie(searchTerm);
-    setMovies(response.results);
-    setTotalPages(response.total_pages);
-  };
-
-  const onChangeSearchTerm = (value: string) => {
-    setSearchTerm(value);
-    // setPage(1)
+  const handleSearchMovie = async (pageToFetch: number) => {
+    try {
+      setIsUpdating((prev) => ({ ...prev, isLoading: true }));
+      const response: MovieListResponse = await searchMovie(
+        pageToFetch,
+        searchTerm
+      );
+      setMovies(response.results);
+      setTotalPages(response.total_pages);
+    } catch (error) {
+    } finally {
+      setIsUpdating((prev) => ({ ...prev, isLoading: false }));
+    }
   };
   useEffect(() => {
-    searchTerm === '' ? fetchMovies(1) : handleSearchMovie();
-  }, [searchTerm]);
+    if (searchTerm === '') {
+      fetchMovies(page);
+    } else {
+      handleSearchMovie(page);
+    }
+  }, [page, searchTerm]);
   return {
     movies,
     page,
     totalPages,
-    loading,
+    isUpdating,
     goToPage,
-    refresh,
     pullToRefresh,
     searchTerm,
-    onChangeSearchTerm,
+    setSearchTerm,
   };
 };
