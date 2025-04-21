@@ -31,7 +31,7 @@ export const usePagination = () => {
 
   useEffect(() => {
     fetchMovies(page);
-  }, [page]); 
+  }, [page]);
 
   const goToPage = (pageNum: number) => {
     if (pageNum >= 1 && pageNum <= totalPages) {
@@ -40,15 +40,18 @@ export const usePagination = () => {
   };
 
   const handleSearchMovie = async () => {
-    const response: MovieListResponse = await searchMovie(searchTerm)
-    setMovies(response.results)
-  }
+    const response: MovieListResponse = await searchMovie(searchTerm);
+    setMovies(response.results);
+    setTotalPages(response.total_pages);
+  };
 
   const onChangeSearchTerm = (value: string) => {
     setSearchTerm(value);
     // setPage(1)
-    searchTerm === '' ? fetchMovies(1) : handleSearchMovie()
   };
+  useEffect(() => {
+    searchTerm === '' ? fetchMovies(1) : handleSearchMovie();
+  }, [searchTerm]);
   return {
     movies,
     page,
