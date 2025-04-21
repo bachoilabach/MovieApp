@@ -1,3 +1,4 @@
+import { showToast, Status } from '@/components/ToastMessage/ToastMessage';
 import { Movie, MovieListResponse } from '@/models/movie.model';
 import { getAllMovie, searchMovie } from '@/services/movie.services';
 import { useEffect, useState } from 'react';
@@ -15,11 +16,16 @@ export const usePagination = () => {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const pullToRefresh = async() => {
-    setIsUpdating((prev) => ({ ...prev, isRefresh: true }));
-    await fetchMovies(1)
-    setPage(1)
-    setIsUpdating((prev) => ({ ...prev, isRefresh: false }));
+  const pullToRefresh = async () => {
+    try {
+      setIsUpdating((prev) => ({ ...prev, isRefresh: true }));
+      await fetchMovies(1);
+      setPage(1);
+    } catch (error) {
+      showToast(Status.error,error.message)
+    } finally {
+      setIsUpdating((prev) => ({ ...prev, isRefresh: false }));
+    }
   };
   const fetchMovies = async (pageToFetch: number) => {
     try {
@@ -62,6 +68,7 @@ export const usePagination = () => {
       setMovies(response.results);
       setTotalPages(response.total_pages);
     } catch (error) {
+      showToast(Status.error,error.messgage)
     } finally {
       setIsUpdating((prev) => ({ ...prev, isLoading: false }));
     }

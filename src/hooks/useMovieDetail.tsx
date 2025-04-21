@@ -3,6 +3,7 @@ import { getMovieById, getMovieVideos } from '@/services/movie.services';
 import { MovieDetail } from '@/models/movie.model';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
+import { showToast, Status } from '@/components/ToastMessage/ToastMessage';
 const defaultMovie: MovieDetail = {
    adult: false,
     backdrop_path: '',
@@ -43,10 +44,7 @@ export const useMovieDetail = (id: number) => {
       const response = await getMovieById(id);
       setMovie(response);
     } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: String(error),
-      });
+      showToast(Status.error, error.message)
     }
   };
 
@@ -60,10 +58,7 @@ export const useMovieDetail = (id: number) => {
         setTrailerKey(trailer.key);
       }
     } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: String(error),
-      });
+      showToast(Status.error, error.message)
     }
   };
 

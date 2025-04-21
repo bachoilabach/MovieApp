@@ -1,3 +1,4 @@
+import { showToast, Status } from '@/components/ToastMessage/ToastMessage';
 import { Movie, MovieListResponse } from '@/models/movie.model';
 import { getAllMovie } from '@/services/movie.services';
 import { useEffect, useState } from 'react';
@@ -18,7 +19,7 @@ export const useMovies = () => {
 
   const pullToRefresh = async() => {
     setIsUpdating((prev) => ({ ...prev, isRefresh: true }));
-    handleGetAllMovie(1)
+    await handleGetAllMovie(1)
     setPage(1);
     setIsUpdating((prev) => ({ ...prev, isRefresh: false }));
   };
@@ -41,10 +42,7 @@ export const useMovies = () => {
         hasMore: response.page < response.total_pages,
       }));
     } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: String(error),
-      });
+      showToast(Status.error, error.message)
     } finally {
       setIsUpdating((prev) => ({
         ...prev,
