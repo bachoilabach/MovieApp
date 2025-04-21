@@ -5,7 +5,7 @@ import {  FlatList, StyleSheet, View } from 'react-native';
 
 export function Updates() {
   const { movies, refresh, pullToRefresh } = useMovieFakeApi();
-
+  // * Fix missing genre_ids
   return (
     <View style={styles.container}>
       <FlatList

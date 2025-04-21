@@ -3,7 +3,7 @@ import { useMovies } from '@/hooks/useMovies';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 export function Home() {
-  const { movies, refresh, pullToRefresh, loadMoreMovie,loadingMore } = useMovies();
+  const { movies, isUpdating, pullToRefresh, loadMoreMovie } = useMovies();
 
   return (
     <View style={styles.container}>
@@ -12,12 +12,12 @@ export function Home() {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <MovieItem {...item} />}
         contentContainerStyle={{ paddingBottom: 20 }}
-        refreshing={refresh}
+        refreshing={isUpdating.isRefresh}
         onRefresh={pullToRefresh}
         onEndReached={loadMoreMovie}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
-          loadingMore ? (
+          isUpdating.isLoadingMore ? (
             <ActivityIndicator style={{ marginVertical: 16 }} />
           ) : null
         }

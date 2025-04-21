@@ -1,63 +1,54 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useMovieDetail } from './useMovieDetail';
 import { updateMovieFakeApi } from '@/services/movie.services';
+import { useForm } from 'react-hook-form';
+import { showToast, Status } from '@/components/ToastMessage/ToastMessage';
 
-type ErrorState = {
+type EditMovieForm = {
   title: string;
   tagline: string;
   original_language: string;
   overview: string;
 };
-
 export const useEditMovie = (id: number) => {
   const { movie, setMovie, navigation } = useMovieDetail(id);
-  const [errors, setErrors] = useState<ErrorState>();
-  const [disabled, setDisabled] = useState<boolean>(true);
 
-  const handleChangeInput = (key: keyof typeof movie, value: string) => {
-    if (!movie) return;
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<EditMovieForm>({
+    defaultValues: {
+      title: '',
+      tagline: '',
+      original_language: '',
+      overview: '',
+    },
+  });
 
-    setErrors((prev) => ({
-      ...prev,
-      [key]: value.trim() === '' ? `${key} cannot be empty` : '',
-    }));
-    const updatedMovie = {
-      ...movie,
-      [key]: value,
-    };
-    setMovie(updatedMovie);
-  };
+  useEffect(() => {
+    setValue('title', movie.title);
+    setValue('tagline', movie.tagline);
+    setValue('original_language', movie.original_language);
+    setValue('overview', movie.overview);
+  }, [movie]);
 
-  const validateForm = () => {
-    if (!movie) return false;
-
-    const newErrors: ErrorState = {};
-    if (!movie.title.trim()) newErrors.title = 'Title is required';
-    if (!movie.tagline.trim()) newErrors.tagline = 'Tagline is required';
-    if (!movie.overview.trim()) newErrors.overview = 'Overview is required';
-    if (!movie.original_language.trim())
-      newErrors.original_language = 'Original language is required';
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSave = async () => {
-    if (!movie) return;
-
-    if (!validateForm) return;
+  const handleSave = async (data: EditMovieForm) => {
     try {
-      await updateMovieFakeApi(id, movie);
+      setMovie((prev) => ({ ...prev, ...data }));
+      await updateMovieFakeApi(id, { ...movie, ...data });
+      showToast(Status.success, 'Edit success');
       navigation.goBack();
     } catch (error) {
-      console.error('Update failed:', error);
+      showToast(Status.error, error.message);
     }
   };
 
   return {
     movie,
-    handleChangeInput,
-    handleSave,
+    handleSave: handleSubmit(handleSave),
     errors,
+    control,
   };
 };

@@ -1,8 +1,7 @@
+import { showToast, Status } from '@/components/ToastMessage/ToastMessage';
 import { Movie, MovieDetail } from '@/models/movie.model';
 import { getMovieFakeApi } from '@/services/movie.services';
-import { useFocusEffect } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { G } from 'react-native-svg';
 
 export const useMovieFakeApi = () => {
   const [movies, setMovies] = useState<MovieDetail[]>([]);
@@ -18,19 +17,14 @@ export const useMovieFakeApi = () => {
       const response = await getMovieFakeApi();
       setMovies(response);
     } catch (error) {
-      console.error('Failed to fetch movies:', error);
+      showToast(Status.error, error.message)
     }
   };
 
   useEffect(() => {
     handleGetAllMovie();
-  }, []);
-  useFocusEffect(()=>{
-    handleGetAllMovie()
-    return () => {
-      
-    }
-  })
+  }, [movies]);
+  
   return {
     movies,
     refresh,
