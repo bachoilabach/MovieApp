@@ -41,7 +41,7 @@ export const searchMovie = async (
 
 export const getMovieFakeApi = async () => {
   try {
-    const response = await axios.get('http://192.168.1.11:3001/movies');
+    const response = await axios.get('http://10.10.113.26:3001/movies');
     return response.data;
   } catch (error) {
     console.log(error);
@@ -52,7 +52,7 @@ export const getMovieFakeApi = async () => {
 export const updateMovieFakeApi = async (id: number, data: any) => {
   try {
     const response = await axios.put(
-      `http://192.168.1.11:3001/movies/${id}`,
+      `http://10.10.113.26:3001/movies/${id}`,
       data
     );
     return response.data;

@@ -8,12 +8,11 @@ import {
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Props } from '@/navigation/screens/MovieDetail';
-import { useMovieDetail } from '@/hooks/useMovieDetail';
 import { useEditMovie } from '@/hooks/useEditMovie';
 
 const EditMovieModal = ({ route }: Props) => {
   const { id } = route.params;
-  const { movie, handleChangeInput, handleSave } = useEditMovie(id);
+  const { movie, handleChangeInput, handleSave, errors } = useEditMovie(id);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -23,6 +22,7 @@ const EditMovieModal = ({ route }: Props) => {
         value={movie?.title}
         onChangeText={(text) => handleChangeInput('title', text)}
       />
+      {errors?.title && <Text style={styles.errorText}>{errors.title}</Text>}
 
       <Text style={styles.label}>Tagline</Text>
       <TextInput
@@ -30,6 +30,9 @@ const EditMovieModal = ({ route }: Props) => {
         value={movie?.tagline}
         onChangeText={(text) => handleChangeInput('tagline', text)}
       />
+      {errors?.tagline && (
+        <Text style={styles.errorText}>{errors.tagline}</Text>
+      )}
 
       <Text style={styles.label}>Original Language</Text>
       <TextInput
@@ -37,6 +40,9 @@ const EditMovieModal = ({ route }: Props) => {
         value={movie?.original_language}
         onChangeText={(text) => handleChangeInput('original_language', text)}
       />
+      {errors?.original_language && (
+        <Text style={styles.errorText}>{errors.original_language}</Text>
+      )}
 
       <Text style={styles.label}>Overview</Text>
       <TextInput
@@ -46,6 +52,9 @@ const EditMovieModal = ({ route }: Props) => {
         multiline
         numberOfLines={4}
       />
+      {errors?.overview && (
+        <Text style={styles.errorText}>{errors.overview}</Text>
+      )}
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveText}>Save</Text>
@@ -89,5 +98,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  errorText: {
+    color: 'red',
   },
 });
