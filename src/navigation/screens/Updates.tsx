@@ -1,22 +1,14 @@
 import MovieItem from '@/components/Movie/MovieItem';
-import ToastMessage from '@/components/ToastMessage/ToastMessage';
+import { useToastContext } from '@/context/ToastContext';
 import { useMovieFakeApi } from '@/hooks/useMovieFakeApi';
 import { Status, useShowToast } from '@/hooks/useShowToast';
 import { Button, FlatList, StyleSheet, View } from 'react-native';
 
 export function Updates() {
   const { movies, refresh, pullToRefresh } = useMovieFakeApi();
-  const toast = useShowToast();
   // * Fix missing genre_ids
   return (
     <View style={styles.container}>
-      <Button title='show toast' onPress={()=>toast.showToast(Status.success,'123123')}/>
-      <ToastMessage
-        top={toast.top}
-        opacity={toast.opacity}
-        status={toast.status}
-        message={toast.message}
-      />
       <FlatList
         data={movies}
         keyExtractor={(item) => item.id.toString()}

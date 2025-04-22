@@ -3,6 +3,7 @@ import { useMovieDetail } from './useMovieDetail';
 import { updateMovieFakeApi } from '@/services/movie.services';
 import { useForm } from 'react-hook-form';
 import { Status, useShowToast } from './useShowToast';
+import { useToastContext } from '@/context/ToastContext';
 
 type EditMovieForm = {
   title: string;
@@ -12,7 +13,7 @@ type EditMovieForm = {
 };
 export const useEditMovie = (id: number) => {
   const { movie, setMovie, navigation } = useMovieDetail(id);
-  const toast = useShowToast()
+  const toast = useToastContext()
   const {
     control,
     handleSubmit,
@@ -51,6 +52,7 @@ export const useEditMovie = (id: number) => {
       toast.showToast(Status.success, 'Edit movie success')
       navigation.goBack();
     } catch (error) {
+      toast.showToast(Status.error, error.message)
     }
   };
 

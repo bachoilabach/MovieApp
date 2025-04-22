@@ -6,6 +6,7 @@ import { Navigation } from './navigation';
 import ToastMessage from './components/ToastMessage/ToastMessage';
 import { View } from 'react-native';
 import { useShowToast, Status } from './hooks/useShowToast';
+import { ToastProvider } from './context/ToastContext';
 
 Asset.loadAsync([
   ...NavigationAssets,
@@ -16,28 +17,18 @@ Asset.loadAsync([
 SplashScreen.preventAutoHideAsync();
 
 export function App() {
-  const toast = useShowToast();
-
   return (
-    <>
+    <ToastProvider >
       <Navigation
         linking={{
           enabled: 'auto',
-          prefixes: [
-            'helloworld://',
-          ],
+          prefixes: ['helloworld://'],
         }}
         onReady={() => {
           SplashScreen.hideAsync();
         }}
       />
-      
-      <ToastMessage
-        top={toast.top}
-        opacity={toast.opacity}
-        status={toast.status}
-        message={toast.message}
-      />
-    </>
+      <ToastMessage />
+    </ToastProvider>
   );
 }

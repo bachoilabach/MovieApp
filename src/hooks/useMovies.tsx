@@ -1,6 +1,8 @@
+import { useToastContext } from '@/context/ToastContext';
 import { Movie, MovieListResponse } from '@/models/movie.model';
 import { getAllMovie } from '@/services/movie.services';
 import { useEffect, useState } from 'react';
+import { Status } from './useShowToast';
 type Update = {
   isRefresh: boolean;
   isLoadingMore: boolean;
@@ -12,6 +14,7 @@ export const useMovies = () => {
     isRefresh: false,
     isLoadingMore: false,
   });
+  const toast = useToastContext()
 
   const pullToRefresh = async () => {
     setIsUpdating((prev) => ({ ...prev, isRefresh: true }));
@@ -38,7 +41,9 @@ export const useMovies = () => {
         isRefresh: false,
         isLoadingMore: false,
       }));
-    } catch (error) {}
+    } catch (error) {
+      toast.showToast(Status.error,error.message)
+    }
   };
 
   useEffect(() => {

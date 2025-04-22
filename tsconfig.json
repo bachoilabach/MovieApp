@@ -13,7 +13,8 @@
       "@props/*": ["props/*"], 
       "@screens/*": ["navigation/screens/*"],
       "@config/*":["config/*"],
-      "@hooks/*": ["hooks/*"]
+      "@hooks/*": ["hooks/*"],
+      "@context/*": ["context/*"]
     }
   }
 }
