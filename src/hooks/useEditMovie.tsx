@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useMovieDetail } from './useMovieDetail';
 import { updateMovieFakeApi } from '@/services/movie.services';
 import { useForm } from 'react-hook-form';
-import { showToast, Status } from '@/components/ToastMessage/ToastMessage';
+import { Status, useShowToast } from './useShowToast';
 
 type EditMovieForm = {
   title: string;
@@ -12,10 +12,11 @@ type EditMovieForm = {
 };
 export const useEditMovie = (id: number) => {
   const { movie, setMovie, navigation } = useMovieDetail(id);
-
+  const toast = useShowToast()
   const {
     control,
     handleSubmit,
+    reset,
     setValue,
     formState: { errors },
   } = useForm<EditMovieForm>({
@@ -28,20 +29,28 @@ export const useEditMovie = (id: number) => {
   });
 
   useEffect(() => {
-    setValue('title', movie.title);
-    setValue('tagline', movie.tagline);
-    setValue('original_language', movie.original_language);
-    setValue('overview', movie.overview);
+    Object.entries(movie).forEach(([key, value]) => {
+      if (key in control._defaultValues) {
+        setValue(key as keyof EditMovieForm, value as string);
+      }
+    });
+    return () => {
+      reset({
+        title: '',
+        tagline: '',
+        original_language: '',
+        overview: '',
+      });
+    };
   }, [movie]);
 
   const handleSave = async (data: EditMovieForm) => {
     try {
       setMovie((prev) => ({ ...prev, ...data }));
       await updateMovieFakeApi(id, { ...movie, ...data });
-      showToast(Status.success, 'Edit success');
+      toast.showToast(Status.success, 'Edit movie success')
       navigation.goBack();
     } catch (error) {
-      showToast(Status.error, error.message);
     }
   };
 

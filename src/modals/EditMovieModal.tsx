@@ -13,52 +13,8 @@ import { Controller, useForm } from 'react-hook-form';
 const EditMovieModal = ({ route }: Props) => {
   const { id } = route.params;
   const { control, errors,handleSave } = useEditMovie(id);
-  // const { movie, handleChangeInput, handleSave, errors} = useEditMovie(id);
 
   return (
-    // <ScrollView contentContainerStyle={styles.container}>
-    //   <Text style={styles.label}>Title</Text>
-    //   <TextInput
-    //     style={styles.input}
-    //     value={movie.title}
-    //     onChangeText={(text) => handleChangeInput('title', text)}
-    //   />
-    //   {errors.title && <Text style={styles.errorText}>{errors.title}</Text>}
-
-    //   <Text style={styles.label}>Tagline</Text>
-    //   <TextInput
-    //     style={styles.input}
-    //     value={movie.tagline}
-    //     onChangeText={(text) => handleChangeInput('tagline', text)}
-    //   />
-    //   {errors.tagline && <Text style={styles.errorText}>{errors.tagline}</Text>}
-
-    //   <Text style={styles.label}>Original Language</Text>
-    //   <TextInput
-    //     style={styles.input}
-    //     value={movie.original_language}
-    //     onChangeText={(text) => handleChangeInput('original_language', text)}
-    //   />
-    //   {errors.original_language && (
-    //     <Text style={styles.errorText}>{errors.original_language}</Text>
-    //   )}
-
-    //   <Text style={styles.label}>Overview</Text>
-    //   <TextInput
-    //     style={[styles.input, styles.textArea]}
-    //     value={movie.overview}
-    //     onChangeText={(text) => handleChangeInput('overview', text)}
-    //     multiline
-    //     numberOfLines={4}
-    //   />
-    //   {errors.overview && (
-    //     <Text style={styles.errorText}>{errors.overview}</Text>
-    //   )}
-
-    //   <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-    //     <Text style={styles.saveText}>Save</Text>
-    //   </TouchableOpacity>
-    // </ScrollView>
     <ScrollView style={styles.container}>
       <Text style={styles.label}>Title</Text>
       <Controller

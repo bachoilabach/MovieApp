@@ -1,8 +1,6 @@
-import { showToast, Status } from '@/components/ToastMessage/ToastMessage';
 import { Movie, MovieListResponse } from '@/models/movie.model';
 import { getAllMovie, searchMovie } from '@/services/movie.services';
 import { useEffect, useState } from 'react';
-import Toast from 'react-native-toast-message';
 type Update = {
   isRefresh: boolean;
   isLoading: boolean;
@@ -20,27 +18,17 @@ export const usePagination = () => {
     try {
       setIsUpdating((prev) => ({ ...prev, isRefresh: true }));
       await fetchMovies(1);
-      setPage(1);
-    } catch (error) {
-      showToast(Status.error,error.message)
-    } finally {
-      setIsUpdating((prev) => ({ ...prev, isRefresh: false }));
-    }
+    } catch (error) {}
   };
   const fetchMovies = async (pageToFetch: number) => {
     try {
       setIsUpdating((prev) => ({ ...prev, isLoading: true }));
       const responses: MovieListResponse = await getAllMovie(pageToFetch);
+      setPage(pageToFetch);
       setMovies(responses.results);
       setTotalPages(responses.total_pages);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: String(error),
-      });
-    } finally {
       setIsUpdating((prev) => ({ ...prev, isLoading: false }));
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -67,11 +55,8 @@ export const usePagination = () => {
       );
       setMovies(response.results);
       setTotalPages(response.total_pages);
-    } catch (error) {
-      showToast(Status.error,error.messgage)
-    } finally {
       setIsUpdating((prev) => ({ ...prev, isLoading: false }));
-    }
+    } catch (error) {}
   };
   useEffect(() => {
     if (searchTerm === '') {

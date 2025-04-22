@@ -1,4 +1,3 @@
-import { showToast, Status } from '@/components/ToastMessage/ToastMessage';
 import { Movie, MovieDetail } from '@/models/movie.model';
 import { getMovieFakeApi } from '@/services/movie.services';
 import { useEffect, useState } from 'react';
@@ -17,7 +16,6 @@ export const useMovieFakeApi = () => {
       const response = await getMovieFakeApi();
       setMovies(response);
     } catch (error) {
-      showToast(Status.error, error.message)
     }
   };
 
