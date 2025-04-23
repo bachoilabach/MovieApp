@@ -1,8 +1,9 @@
 import { Movie, MovieListResponse } from '@/models/movie.model';
-import { getAllMovie } from '@/services/movie.services';
+import { addFavouriteMovie, getAllMovie } from '@/services/movie.services';
 import { useEffect, useState } from 'react';
 import { Status } from './useShowToast';
 import { showToast } from '@/services/toast.services';
+import { useAuth } from '@/context/AuthContext';
 
 type Update = {
   isRefresh: boolean;
@@ -15,6 +16,7 @@ export const useMovies = () => {
     isRefresh: false,
     isLoadingMore: false,
   });
+  const { sessionId, user } = useAuth();
 
   const pullToRefresh = async () => {
     setIsUpdating((prev) => ({ ...prev, isRefresh: true }));
@@ -48,6 +50,19 @@ export const useMovies = () => {
     }
   };
 
+  const handleAddFavouriteMovie = async (movieId: number) => {
+    try {
+      if (!sessionId || !user) {
+        showToast(Status.error, 'You need to login');
+        return;
+      }
+      await addFavouriteMovie(user.id, sessionId, movieId);
+      showToast(Status.success, 'Added to favorites!');
+    } catch (error: any) {
+      showToast(Status.error, error.message);
+    }
+  };
+
   useEffect(() => {
     handleGetAllMovie(page);
   }, []);
@@ -56,5 +71,6 @@ export const useMovies = () => {
     isUpdating,
     pullToRefresh,
     loadMoreMovie,
+    handleAddFavouriteMovie,
   };
 };
