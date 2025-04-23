@@ -1,6 +1,8 @@
 import { Movie, MovieDetail } from '@/models/movie.model';
 import { getMovieFakeApi } from '@/services/movie.services';
 import { useEffect, useState } from 'react';
+import { Status } from './useShowToast';
+import { showToast } from '@/services/toast.services';
 
 export const useMovieFakeApi = () => {
   const [movies, setMovies] = useState<MovieDetail[]>([]);
@@ -15,14 +17,15 @@ export const useMovieFakeApi = () => {
     try {
       const response = await getMovieFakeApi();
       setMovies(response);
-    } catch (error) {
+    } catch (error: any) {
+      showToast(Status.error, error.message);
     }
   };
 
   useEffect(() => {
     handleGetAllMovie();
   }, [movies]);
-  
+
   return {
     movies,
     refresh,

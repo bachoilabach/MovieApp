@@ -1,46 +1,47 @@
-import { useRef, useState } from "react";
-import { Animated } from "react-native";
+import { useRef, useState } from 'react';
+import { Alert, Animated } from 'react-native';
 
 export enum Status {
-  success = "success",
-  error = "error",
+  success = 'success',
+  error = 'error',
 }
 
 export const useShowToast = () => {
-  const top = useRef(new Animated.Value(-100)).current;
+  const top = useRef(new Animated.Value(-50)).current;
   const opacity = useRef(new Animated.Value(0)).current;
-  const [message, setMessage] = useState<string>(""); 
-  const [status, setStatus] = useState<Status>(Status.success); 
+  const [message, setMessage] = useState<string>('');
+  const [status, setStatus] = useState<Status>(Status.success);
 
   const showToast = (status: Status, message: string) => {
-    setStatus(status); 
+    console.log(status,message)
+    setStatus(status);
     setMessage(message);
     Animated.parallel([
       Animated.timing(top, {
-        toValue: 20, 
-        duration: 500,
+        toValue: 50,
+        duration: 300,
         useNativeDriver: false,
       }),
       Animated.timing(opacity, {
-        toValue: 1, 
-        duration: 500,
+        toValue: 1,
+        duration: 300,
         useNativeDriver: false,
       }),
     ]).start(() => {
-      setTimeout(() => hideToast(), 3000); 
+      setTimeout(() => hideToast(), 3000);
     });
   };
 
   const hideToast = () => {
     Animated.parallel([
       Animated.timing(top, {
-        toValue: -100,
-        duration: 200,
+        toValue: -50,
+        duration: 300,
         useNativeDriver: false,
       }),
       Animated.timing(opacity, {
-        toValue: 0, 
-        duration: 200,
+        toValue: 0,
+        duration: 300,
         useNativeDriver: false,
       }),
     ]).start();

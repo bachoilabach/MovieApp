@@ -23,7 +23,6 @@ const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 const MovieDetail = ({ route }: Props) => {
   const { id } = route.params;
   const { movie, trailerKey, loading, navigation } = useMovieDetail(id);
-  const toast = useShowToast()
   if (loading || !movie)
     return (
       <View style={styles.loading}>
@@ -32,7 +31,6 @@ const MovieDetail = ({ route }: Props) => {
     );
   return (
     <ScrollView style={styles.container}>
-      <ToastMessage {...toast}/>
       <Image
         source={{ uri: IMAGE_BASE_URL + movie.poster_path }}
         style={styles.poster}
@@ -49,7 +47,7 @@ const MovieDetail = ({ route }: Props) => {
           <Text style={styles.title}>{movie.title}</Text>
           <TouchableOpacity
             style={styles.buttonEdit}
-            onPress={() => navigation.navigate('EditMovieModal',{id})}>
+            onPress={() => navigation.navigate('EditMovieModal', { id })}>
             <Text style={styles.editText}>Edit</Text>
           </TouchableOpacity>
         </View>

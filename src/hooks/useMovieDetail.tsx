@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { getMovieById, getMovieVideos } from '@/services/movie.services';
 import { MovieDetail } from '@/models/movie.model';
 import { useNavigation } from '@react-navigation/native';
+import { Status } from './useShowToast';
+import { showToast } from '@/services/toast.services';
 const defaultMovie: MovieDetail = {
   adult: false,
   backdrop_path: '',
@@ -65,7 +67,9 @@ export const useMovieDetail = (id: number) => {
       setLoading(true);
       await Promise.all([handleFetchMovieData(), handleFetchTrailer()]);
       setLoading(false);
-    } catch (error) {}
+    } catch (error: any) {
+      showToast(Status.error, error.message)
+    }
   };
   useEffect(() => {
     loadData();

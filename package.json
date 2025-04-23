@@ -11,7 +11,8 @@
     "@screens": "src/navigation/screens",
     "@components": "src/components",
     "@config": "src/config",
-    "@hooks": "src/hooks"
+    "@hooks": "src/hooks",
+    "@context": "src/context"
   },
   "scripts": {
     "start": "expo start --dev-client",
@@ -21,6 +22,7 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~4.0.0",
+    "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-navigation/bottom-tabs": "^7.1.1",
     "@react-navigation/elements": "^2.2.3",
     "@react-navigation/native": "^7.0.12",
@@ -32,6 +34,7 @@
     "expo": "~52.0.11",
     "expo-asset": "~11.0.1",
     "expo-dev-client": "~5.0.4",
+    "expo-linking": "^7.0.5",
     "expo-splash-screen": "~0.29.13",
     "expo-system-ui": "~4.0.4",
     "express": "^5.1.0",
