@@ -2,10 +2,14 @@ import { Alert, Animated, StyleSheet, Text } from 'react-native';
 import React from 'react';
 import { CheckIcon } from '@/assets/svgIcons';
 import { Colors } from '@/constants/Colors';
-import { useToastContext } from '@/context/ToastContext';
-
-const ToastMessage = () => {
-  const { top, opacity, status, message } = useToastContext();
+import { Status } from '@/hooks/useShowToast';
+type ToastMessage = {
+  top: number;
+  opacity: number;
+  status: Status;
+  message: string;
+};
+const ToastMessage = ({ top, opacity, status, message }: ToastMessage) => {
   return (
     <Animated.View
       tabIndex={0}
