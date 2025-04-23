@@ -4,9 +4,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
 import { Navigation } from './navigation';
 import ToastMessage from './components/ToastMessage/ToastMessage';
-import { View } from 'react-native';
-import { useShowToast, Status } from './hooks/useShowToast';
-import { ToastProvider } from './context/ToastContext';
+import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './components/ToastMessage/ToastProvider';
 
 Asset.loadAsync([
   ...NavigationAssets,
@@ -18,17 +17,18 @@ SplashScreen.preventAutoHideAsync();
 
 export function App() {
   return (
-    <ToastProvider >
-      <Navigation
-        linking={{
-          enabled: 'auto',
-          prefixes: ['helloworld://'],
-        }}
-        onReady={() => {
-          SplashScreen.hideAsync();
-        }}
-      />
-      <ToastMessage />
+    <ToastProvider>
+      <AuthProvider>
+        <Navigation
+          linking={{
+            enabled: 'auto',
+            prefixes: ['helloworld://'],
+          }}
+          onReady={() => {
+            SplashScreen.hideAsync();
+          }}
+        />
+      </AuthProvider>
     </ToastProvider>
   );
 }
