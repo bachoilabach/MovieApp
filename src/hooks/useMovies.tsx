@@ -1,8 +1,9 @@
-import { useToastContext } from '@/context/ToastContext';
 import { Movie, MovieListResponse } from '@/models/movie.model';
 import { getAllMovie } from '@/services/movie.services';
 import { useEffect, useState } from 'react';
 import { Status } from './useShowToast';
+import { showToast } from '@/services/toast.services';
+
 type Update = {
   isRefresh: boolean;
   isLoadingMore: boolean;
@@ -14,14 +15,13 @@ export const useMovies = () => {
     isRefresh: false,
     isLoadingMore: false,
   });
-  const toast = useToastContext()
 
   const pullToRefresh = async () => {
     setIsUpdating((prev) => ({ ...prev, isRefresh: true }));
     await handleGetAllMovie(1);
   };
 
-  const loadMoreMovie = async() => {
+  const loadMoreMovie = async () => {
     if (!isUpdating.isLoadingMore) {
       const nextPage = page + 1;
       setIsUpdating((prev) => ({ ...prev, isLoadingMore: true }));
@@ -33,16 +33,18 @@ export const useMovies = () => {
   const handleGetAllMovie = async (pageToFetch: number) => {
     try {
       const response: MovieListResponse = await getAllMovie(pageToFetch);
-      pageToFetch === 1
-        ? setMovies(response.results)
-        : setMovies((prev) => [...prev, ...response.results]);
+      if (pageToFetch === 1) {
+        setMovies(response.results);
+      } else {
+        setMovies((prev) => [...prev, ...response.results]);
+      }
       setIsUpdating((prev) => ({
         ...prev,
         isRefresh: false,
         isLoadingMore: false,
       }));
-    } catch (error) {
-      toast.showToast(Status.error,error.message)
+    } catch (error: any) {
+      showToast(Status.error, error.message);
     }
   };
 

@@ -1,8 +1,6 @@
 import MovieItem from '@/components/Movie/MovieItem';
-import { useToastContext } from '@/context/ToastContext';
 import { useMovieFakeApi } from '@/hooks/useMovieFakeApi';
-import { Status, useShowToast } from '@/hooks/useShowToast';
-import { Button, FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 export function Updates() {
   const { movies, refresh, pullToRefresh } = useMovieFakeApi();

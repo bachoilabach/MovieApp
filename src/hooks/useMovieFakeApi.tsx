@@ -1,13 +1,12 @@
-import { useToastContext } from '@/context/ToastContext';
 import { Movie, MovieDetail } from '@/models/movie.model';
 import { getMovieFakeApi } from '@/services/movie.services';
 import { useEffect, useState } from 'react';
 import { Status } from './useShowToast';
+import { showToast } from '@/services/toast.services';
 
 export const useMovieFakeApi = () => {
   const [movies, setMovies] = useState<MovieDetail[]>([]);
   const [refresh, setRefresh] = useState<boolean>(false);
-  const toast = useToastContext();
   const pullToRefresh = async () => {
     setRefresh(true);
     await handleGetAllMovie();
@@ -18,8 +17,8 @@ export const useMovieFakeApi = () => {
     try {
       const response = await getMovieFakeApi();
       setMovies(response);
-    } catch (error) {
-      toast.showToast(Status.error, error.message);
+    } catch (error: any) {
+      showToast(Status.error, error.message);
     }
   };
 

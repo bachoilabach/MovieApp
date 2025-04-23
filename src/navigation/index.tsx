@@ -12,10 +12,11 @@ import { Profile } from './screens/Profile';
 import { Settings } from './screens/Settings';
 import { Updates } from './screens/Updates';
 import { NotFound } from './screens/NotFound';
-import { HomeIcon } from '../assets/svgIcons';
+import { HomeIcon, PaginationIcon, SettingIcon } from '../assets/svgIcons';
 import MovieDetail from './screens/MovieDetail';
 import { Pagination } from './screens/Pagination';
 import EditMovieModal from '@/modals/EditMovieModal';
+import Login from './screens/Login';
 
 
 const HomeTabs = createBottomTabNavigator({
@@ -46,9 +47,16 @@ const HomeTabs = createBottomTabNavigator({
       screen: Pagination,
       options: {
         title: 'Pagination',
-        tabBarIcon: ({ color }) => <HomeIcon color={color} />,
+        tabBarIcon: ({ color }) => <PaginationIcon color={color} />,
       },
-    }
+    },
+    Setting: {
+      screen: Settings,
+      options: {
+        title: 'Profile',
+        tabBarIcon: ({ color }) => <SettingIcon color={color} />,
+      },
+    },
   },
 });
 
@@ -110,6 +118,17 @@ const RootStack = createNativeStackNavigator({
     },
     EditMovieModal: {
       screen: EditMovieModal,
+      options: ({ navigation }) => ({
+        presentation: 'modal',
+        headerRight: () => (
+          <HeaderButton onPress={navigation.goBack}>
+            <Text>Close</Text>
+          </HeaderButton>
+        ),
+      }),
+    },
+    Login: {
+      screen: Login,
       options: ({ navigation }) => ({
         presentation: 'modal',
         headerRight: () => (

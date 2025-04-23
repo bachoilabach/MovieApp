@@ -13,6 +13,7 @@ export const useShowToast = () => {
   const [status, setStatus] = useState<Status>(Status.success);
 
   const showToast = (status: Status, message: string) => {
+    console.log(status,message)
     setStatus(status);
     setMessage(message);
     Animated.parallel([
