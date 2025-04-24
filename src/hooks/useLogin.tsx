@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { Status } from "./useShowToast";
 import { useEffect } from "react";
 import { showToast } from "@/services/toast.services";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type LoginForm = {
   username: string;
@@ -28,6 +29,7 @@ export function useLogin() {
   const handleLogin = async (loginForm: LoginForm) => {
     try {
       const token = await getRequestToken();
+      await AsyncStorage.setItem('requestToken', token);
       const validatedToken = await validateLogin(
         loginForm.username,
         loginForm.password,

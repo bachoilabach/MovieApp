@@ -18,7 +18,7 @@ http.interceptors.request.use(
       config.params = {};
     }
 
-    config.params['api_key'] = API_KEY;
+    config.params['api_key'] = 'beddc8c18b3b4508f644f72b198601e5';
 
     return config;
   },
