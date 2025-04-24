@@ -57,6 +57,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.3.12",
+    "@types/react-native": "^0.72.8",
     "json-server": "^1.0.0-beta.3",
     "typescript": "^5.8.3"
   },

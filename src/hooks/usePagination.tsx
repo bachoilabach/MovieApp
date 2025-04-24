@@ -1,8 +1,8 @@
-import { Movie, MovieListResponse } from '@/models/movie.model';
-import { getAllMovie, searchMovie } from '@/services/movie.services';
-import { useEffect, useState } from 'react';
-import { Status } from './useShowToast';
-import { showToast } from '@/services/toast.services';
+import { Movie, MovieListResponse } from "@/models/movie.model";
+import { getAllMovie, searchMovie } from "@/services/movie.services";
+import { useEffect, useState } from "react";
+import { Status } from "./useShowToast";
+import { showToast } from "@/services/toast.services";
 type Update = {
   isRefresh: boolean;
   isLoading: boolean;
@@ -15,7 +15,7 @@ export const usePagination = () => {
   });
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const pullToRefresh = async () => {
     try {
@@ -45,7 +45,7 @@ export const usePagination = () => {
   const goToPage = (pageNum: number) => {
     if (pageNum >= 1 && pageNum <= totalPages) {
       setPage(pageNum);
-      if (searchTerm === '') {
+      if (searchTerm === "") {
         fetchMovies(pageNum);
       } else {
         handleSearchMovie(pageNum);
@@ -67,13 +67,16 @@ export const usePagination = () => {
       showToast(Status.error, error.message);
     }
   };
+  useEffect(()=> {
+    setPage(1)
+  },[searchTerm])
   useEffect(() => {
-    if (searchTerm === '') {
+    if (searchTerm === "") {
       fetchMovies(page);
     } else {
       handleSearchMovie(page);
     }
-  }, [page, searchTerm]);
+  }, [page,searchTerm]);
   return {
     movies,
     page,
