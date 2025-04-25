@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { Status } from "./useShowToast";
 import { toastService } from "@/services/toast.services";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "@/config/store";
+import { AppDispatch } from "@/store/store";
 import { fetchMovies, refresh } from "@/slices/movieSlice";
 
 type Update = {

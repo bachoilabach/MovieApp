@@ -1,18 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  getAllMovie,
-  getMovieById,
-  getMovieVideos,
-  MovieVideo,
-} from "@/services/movie.services";
-import { Movie, MovieDetail } from "@/models/movie.model";
+import { getAllMovie } from "@/services/movie.services";
+import { Movie } from "@/models/movie.model";
 
 interface MovieState {
   movies: Movie[];
   totalPages: number;
   currentPage: number;
-  detail: MovieDetail | null;
-  videos: MovieVideo[];
   isLoading: boolean;
   isRefreshing: boolean;
   isLoadingMore: boolean;
@@ -22,8 +15,6 @@ const initialState: MovieState = {
   movies: [],
   totalPages: 0,
   currentPage: 1,
-  detail: null,
-  videos: [],
   isLoading: false,
   isRefreshing: false,
   isLoadingMore: false,
@@ -37,30 +28,10 @@ export const fetchMovies = createAsyncThunk(
   }
 );
 
-export const fetchMovieDetail = createAsyncThunk(
-  "movies/fetchDetail",
-  async (id: number) => {
-    const response = await getMovieById(id);
-    return response;
-  }
-);
-
-export const fetchMovieVideos = createAsyncThunk(
-  "movies/fetchVideos",
-  async (id: number) => {
-    const response = await getMovieVideos(id);
-    return response;
-  }
-);
-
 const movieSlice = createSlice({
   name: "movies",
   initialState,
   reducers: {
-    clearMovieDetail(state) {
-      state.detail = null;
-      state.videos = [];
-    },
     refresh: (state, action) => {
       state.isRefreshing = action.payload;
     },
@@ -85,31 +56,9 @@ const movieSlice = createSlice({
       })
       .addCase(fetchMovies.rejected, (state) => {
         state.isLoading = false;
-      })
-
-      .addCase(fetchMovieDetail.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(fetchMovieDetail.fulfilled, (state, action) => {
-        state.detail = action.payload;
-        state.isLoading = false;
-      })
-      .addCase(fetchMovieDetail.rejected, (state) => {
-        state.isLoading = false;
-      })
-
-      .addCase(fetchMovieVideos.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(fetchMovieVideos.fulfilled, (state, action) => {
-        state.videos = action.payload;
-        state.isLoading = false;
-      })
-      .addCase(fetchMovieVideos.rejected, (state) => {
-        state.isLoading = false;
       });
   },
 });
 
-export const { clearMovieDetail, refresh,loadingMore } = movieSlice.actions;
+export const { refresh, loadingMore } = movieSlice.actions;
 export default movieSlice.reducer;
