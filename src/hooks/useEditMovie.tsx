@@ -3,7 +3,7 @@ import { useMovieDetail } from './useMovieDetail';
 import { updateMovieFakeApi } from '@/services/movie.services';
 import { useForm } from 'react-hook-form';
 import { Status, useShowToast } from './useShowToast';
-import { showToast } from '@/services/toast.services';
+import { toastService } from '../services/toast.services';
 
 type EditMovieForm = {
   title: string;
@@ -48,10 +48,10 @@ export const useEditMovie = (id: number) => {
     try {
       setMovie((prev) => ({ ...prev, ...data }));
       await updateMovieFakeApi(id, { ...movie, ...data });
-      showToast(Status.success, 'Edit movie success')
+      toastService.showToast(Status.success, 'Edit movie success')
       navigation.goBack();
     } catch (error: any) {
-      showToast(Status.error, error.message)
+      toastService.showToast(Status.error, error.message)
     }
   };
 
