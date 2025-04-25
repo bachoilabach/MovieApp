@@ -1,20 +1,29 @@
-import { useAuth } from "@/context/AuthContext";
-import { getRequestToken, getSessionId, validateLogin } from "@/services/user.services";
+// useLogin.ts
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
-import { Status } from "./useShowToast";
 import { useEffect } from "react";
-import { showToast } from "@/services/toast.services";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { toastService } from "../services/toast.services";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/config/store";
+import {
+  getAccountDetail,
+  getRequestToken,
+  getSessionId,
+  validateLogin,
+} from "@/services/user.services";
+import { Status } from "./useShowToast";
+import { login, logout } from "@/slices/authSlice";
 
 type LoginForm = {
   username: string;
   password: string;
 };
+
 export function useLogin() {
-  const { login } = useAuth();
-  
+  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
+
   const {
     control,
     handleSubmit,
@@ -22,39 +31,67 @@ export function useLogin() {
     formState: { errors },
   } = useForm<LoginForm>({
     defaultValues: {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
     },
   });
+
   const handleLogin = async (loginForm: LoginForm) => {
     try {
-      const token = await getRequestToken();
-      await AsyncStorage.setItem('requestToken', token);
-      const validatedToken = await validateLogin(
-        loginForm.username,
-        loginForm.password,
-        token
+      const res = await getRequestToken();
+      console.log(res)
+      const params = {
+        username: loginForm.username,
+        password: loginForm.password,
+        request_token: res.request_token,
+      };
+      const validatedToken = await validateLogin(params);
+      const sessionRes = await getSessionId(validatedToken.request_token);
+      const user = await getAccountDetail(sessionRes.session_id);
+      dispatch(
+        login({
+          sessionId: sessionRes.session_id,
+          user: {
+            id: user.id,
+            username: user.username,
+            name: user.name,
+          },
+        })
       );
-      const sessionId = await getSessionId(validatedToken);
-      login(sessionId);
-      showToast(Status.success, 'Login success');
+
+      toastService.showToast(Status.success, "Login success");
       navigation.goBack();
-    } catch (err: any) {
-      showToast(Status.error, 'Invalid username or password');
+    } catch (err) {
+      toastService.showToast(Status.error, "Invalid username or password");
     }
+  };
+
+  const handleResetFormLogin = () => {
+    reset({
+      username: "",
+      password: "",
+    });
   };
 
   useEffect(() => {
     return () => {
-      reset({
-        username: '',
-        password: '',
-      });
+      handleResetFormLogin();
     };
   }, []);
+
+  const user = useSelector((state: any) => state.auth.user);
+  const sessionId = useSelector((state: any) => state.auth.sessionId);
+
+  const handleLogout = async () => {
+    dispatch(logout());
+  };
+
   return {
     control,
     handleLogin: handleSubmit(handleLogin),
-    errors
-  }
+    errors,
+    user,
+    sessionId,
+    handleLogout,
+  };
 }

@@ -1,5 +1,5 @@
 import MovieItem from "@/components/Movie/MovieItem";
-import { useAuth } from "@/context/AuthContext";
+import { useLogin } from "@/hooks/useLogin";
 import { useMovies } from "@/hooks/useMovies";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -12,9 +12,12 @@ import {
   StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
 
 export function Settings() {
-  const { sessionId, user, logout } = useAuth();
+  const { handleLogout } = useLogin();
+  const user = useSelector((state: any) => state.auth.user);
+    const sessionId = useSelector((state: any) => state.auth.sessionId);
   const navigation = useNavigation();
   const { favourMovies, isUpdating, pullToRefresh } = useMovies();
 
@@ -77,7 +80,7 @@ export function Settings() {
       />
 
       <View style={styles.logoutContainer}>
-        <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
+        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
           <Text style={styles.textLogout}>Log out</Text>
         </TouchableOpacity>
       </View>

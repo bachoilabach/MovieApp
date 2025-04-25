@@ -32,7 +32,7 @@ http.interceptors.request.use(
 );
 
 http.interceptors.response.use(
-  (response) => response,
+  (response) => response.data,
   (error) => {
     console.error('HTTP Error:', error.response?.data || error.message);
     return Promise.reject(error);

@@ -1,8 +1,13 @@
 import { Movie, MovieListResponse } from "@/models/movie.model";
-import { getAllMovie, searchMovie } from "@/services/movie.services";
+import {
+  getAllMovie,
+  MovieSearchParams,
+  searchMovie,
+} from "@/services/movie.services";
 import { useEffect, useState } from "react";
 import { Status } from "./useShowToast";
-import { showToast } from "@/services/toast.services";
+import { toastService } from "@/services/toast.services";
+
 type Update = {
   isRefresh: boolean;
   isLoading: boolean;
@@ -22,7 +27,7 @@ export const usePagination = () => {
       setIsUpdating((prev) => ({ ...prev, isRefresh: true }));
       await fetchMovies(1);
     } catch (error: any) {
-      showToast(Status.error, error.message);
+      toastService.showToast(Status.error, error.message);
     }
   };
   const fetchMovies = async (pageToFetch: number) => {
@@ -34,7 +39,7 @@ export const usePagination = () => {
       setTotalPages(responses.total_pages);
       setIsUpdating((prev) => ({ ...prev, isLoading: false }));
     } catch (error: any) {
-      showToast(Status.error, error.message);
+      toastService.showToast(Status.error, error.message);
     }
   };
 
@@ -56,27 +61,28 @@ export const usePagination = () => {
   const handleSearchMovie = async (pageToFetch: number) => {
     try {
       setIsUpdating((prev) => ({ ...prev, isLoading: true }));
-      const response: MovieListResponse = await searchMovie(
-        pageToFetch,
-        searchTerm
-      );
+      const params: MovieSearchParams = {
+        page: pageToFetch,
+        query: searchTerm,
+      };
+      const response: MovieListResponse = await searchMovie(params);
       setMovies(response.results);
       setTotalPages(response.total_pages);
       setIsUpdating((prev) => ({ ...prev, isLoading: false }));
     } catch (error: any) {
-      showToast(Status.error, error.message);
+      toastService.showToast(Status.error, error.message);
     }
   };
-  useEffect(()=> {
-    setPage(1)
-  },[searchTerm])
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm]);
   useEffect(() => {
     if (searchTerm === "") {
       fetchMovies(page);
     } else {
       handleSearchMovie(page);
     }
-  }, [page,searchTerm]);
+  }, [page, searchTerm]);
   return {
     movies,
     page,

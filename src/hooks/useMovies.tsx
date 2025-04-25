@@ -7,8 +7,9 @@ import {
 } from "@/services/movie.services";
 import { useEffect, useState } from "react";
 import { Status } from "./useShowToast";
-import { showToast } from "@/services/toast.services";
 import { useAuth } from "@/context/AuthContext";
+import { toastService } from "../services/toast.services";
+import { useLogin } from "./useLogin";
 
 type Update = {
   isRefresh: boolean;
@@ -21,7 +22,7 @@ export const useMovies = () => {
     isRefresh: false,
     isLoadingMore: false,
   });
-  const { sessionId, user } = useAuth();
+  const { sessionId, user } = useLogin();
   const [favourMovies, setFavourMovies] = useState<Movie[]>([]);
 
   const pullToRefresh = async () => {
@@ -53,21 +54,26 @@ export const useMovies = () => {
         isLoadingMore: false,
       }));
     } catch (error: any) {
-      showToast(Status.error, error.message);
+      toastService.showToast(Status.error, error.message);
     }
   };
 
   const handleAddFavouriteMovie = async (movieId: number) => {
     try {
       if (!sessionId || !user) {
-        showToast(Status.error, "You need to login");
+        toastService.showToast(Status.error, "You need to login");
         return;
       }
-      await addFavouriteMovie(user.id, sessionId, movieId);
+
+      await addFavouriteMovie({
+        accountId: user.id,
+        sessionId: sessionId,
+        mediaId: movieId,
+      });
       await handleGetFavouritMovie();
-      showToast(Status.success, "Added to favorites!");
+      toastService.showToast(Status.success, "Added to favorites!");
     } catch (error: any) {
-      showToast(Status.error, error.message);
+      toastService.showToast(Status.error, error.message);
     }
   };
 
@@ -75,19 +81,22 @@ export const useMovies = () => {
     try {
       await deleteFavouriteMovie(user.id, sessionId, movieId);
       await handleGetFavouritMovie();
-      showToast(Status.success, "Delete favorite movie");
+      toastService.showToast(Status.success, "Delete favorite movie");
     } catch (error: any) {
-      showToast(Status.error, error.message);
+      toastService.showToast(Status.error, error.message);
     }
   };
 
   const handleGetFavouritMovie = async () => {
     try {
       if (!sessionId || !user) return;
-      const res = await getFavouriteMoviees(user.id, sessionId);
+      const res = await getFavouriteMoviees({
+        accountId: user.id,
+        sessionId: sessionId,
+      });
       setFavourMovies(res.results);
     } catch (error: any) {
-      showToast(Status.error, error.message);
+      toastService.showToast(Status.error, error.message);
     }
   };
 
@@ -104,7 +113,7 @@ export const useMovies = () => {
 
   useEffect(() => {
     if (sessionId && user) {
-      handleGetFavouritMovie()
+      handleGetFavouritMovie();
     }
   }, [sessionId, user?.id]);
 

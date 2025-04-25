@@ -13,7 +13,6 @@ import { useNavigation } from "@react-navigation/native";
 import { Colors } from "@/constants/Colors";
 import { HeartIcon } from "@/assets/svgIcons";
 import { useMovies } from "@/hooks/useMovies";
-import { useAuth } from "@/context/AuthContext";
 
 interface MovieItemProps extends Movie {}
 

@@ -1,46 +1,47 @@
-import http from '@/config/axios';
+import http from "@/config/axios";
+import { DetailAccount, RequestToken, SessionId } from "@/models/user.model";
+import { Status } from "@/hooks/useShowToast";
+import { ValidateLogin, ValidateLoginParams } from "../models/user.model";
+import { toastService } from "./toast.services";
 
-export const getRequestToken = async () => {
+export const getRequestToken = async (): Promise<RequestToken> => {
   try {
-    const res = await http.get(`/authentication/token/new`);
-    return res.data.request_token;
-  } catch (error) {}
+    const res = await http.get<any, RequestToken>("/authentication/token/new");
+    return res;
+  } catch (error) {
+    toastService.showToast(Status.error, "Failed to get request token");
+    throw error;
+  }
 };
 
 export const validateLogin = async (
-  username: string,
-  password: string,
-  requestToken: string
-) => {
-  const res = await http.post(`/authentication/token/validate_with_login`, {
-    username,
-    password,
-    request_token: requestToken,
-  });
+  args: ValidateLoginParams
+): Promise<ValidateLogin> => {
+  const res = await http.post<ValidateLoginParams, ValidateLogin>(
+    "/authentication/token/validate_with_login",
+    args
+  );
 
-  const data = res.data;
-  if (!data.success) {
-    
-  }
-
-  return res.data.request_token;
+  return res;
 };
 
-export const getSessionId = async (request_token: string) => {
-  const res = await http.post(`/authentication/session/new`, {
-    request_token: request_token,
+export const getSessionId = async (
+  request_token: string
+): Promise<SessionId> => {
+  const res = await http.post<any, SessionId>("/authentication/session/new", {
+    request_token,
   });
-  const data = res.data;
-  if (!data.success) {
-    throw new Error(data.status_message || 'Failed to create session');
-  }
-
-  return res.data.session_id;
+  return res;
 };
 
-export const getAccountDetail = async (sessionId: string) => {
-  const res = await http.get('/account', {
-    params: { session_id: sessionId },
+export const getAccountDetail = async (
+  sessionId: string
+): Promise<DetailAccount> => {
+  const res = await http.get<null, DetailAccount>("/account", {
+    params: {
+      session_id: sessionId,
+    },
   });
-  return res.data;
+
+  return res;
 };
