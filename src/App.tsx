@@ -21,7 +21,6 @@ export function App() {
   return (
     <Provider store={store}>
       <ToastProvider>
-        <AuthProvider>
           <Navigation
             linking={{
               enabled: "auto",
@@ -31,7 +30,6 @@ export function App() {
               SplashScreen.hideAsync();
             }}
           />
-        </AuthProvider>
       </ToastProvider>
     </Provider>
   );

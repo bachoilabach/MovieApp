@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Colors } from "@/constants/Colors";
 import { HeartIcon } from "@/assets/svgIcons";
 import { useMovies } from "@/hooks/useMovies";
+import { useFavourite } from "@/hooks/useFavourite";
 
 interface MovieItemProps extends Movie {}
 
@@ -25,7 +26,7 @@ const MovieItem = (props: MovieItemProps) => {
     handleAddFavouriteMovie,
     isFavouriteMovie,
     handleDeleteFavouriteMovie,
-  } = useMovies();
+  } = useFavourite();
   return (
     <SafeAreaProvider>
       <SafeAreaView>

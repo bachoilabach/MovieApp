@@ -1,39 +1,115 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  getAllMovie,
+  getMovieById,
+  getMovieVideos,
+  MovieVideo,
+} from "@/services/movie.services";
+import { Movie, MovieDetail } from "@/models/movie.model";
 
-type User = {
-  id: number;
-  username: string;
-  name: string;
+interface MovieState {
+  movies: Movie[];
+  totalPages: number;
+  currentPage: number;
+  detail: MovieDetail | null;
+  videos: MovieVideo[];
+  isLoading: boolean;
+  isRefreshing: boolean;
+  isLoadingMore: boolean;
+}
+
+const initialState: MovieState = {
+  movies: [],
+  totalPages: 0,
+  currentPage: 1,
+  detail: null,
+  videos: [],
+  isLoading: false,
+  isRefreshing: false,
+  isLoadingMore: false,
 };
 
-type AuthState = {
-  sessionId: string | null;
-  user: User | null;
-  isLoggedIn: boolean;
-};
+export const fetchMovies = createAsyncThunk(
+  "movies/fetchAll",
+  async (page: number) => {
+    const response = await getAllMovie(page);
+    return response;
+  }
+);
 
-const initialState: AuthState = {
-  sessionId: null,
-  user: null,
-  isLoggedIn: false,
-};
+export const fetchMovieDetail = createAsyncThunk(
+  "movies/fetchDetail",
+  async (id: number) => {
+    const response = await getMovieById(id);
+    return response;
+  }
+);
 
-const authSlice = createSlice({
-  name: "auth",
+export const fetchMovieVideos = createAsyncThunk(
+  "movies/fetchVideos",
+  async (id: number) => {
+    const response = await getMovieVideos(id);
+    return response;
+  }
+);
+
+const movieSlice = createSlice({
+  name: "movies",
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<{ sessionId: string; user: User }>) => {
-      state.sessionId = action.payload.sessionId;
-      state.user = action.payload.user;
-      state.isLoggedIn = true;
+    clearMovieDetail(state) {
+      state.detail = null;
+      state.videos = [];
     },
-    logout: (state) => {
-      state.sessionId = null;
-      state.user = null;
-      state.isLoggedIn = false;
+    refresh: (state, action) => {
+      state.isRefreshing = action.payload;
     },
+    loadingMore: (state, action) => {
+      state.isLoadingMore = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchMovies.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchMovies.fulfilled, (state, action) => {
+        if (action.payload.page === 1) {
+          state.movies = action.payload.results;
+        } else {
+          state.movies = [...state.movies, ...action.payload.results];
+        }
+        state.totalPages = action.payload.total_pages;
+        state.currentPage = action.payload.page;
+        state.isLoading = false;
+      })
+      .addCase(fetchMovies.rejected, (state) => {
+        state.isLoading = false;
+      })
+
+      .addCase(fetchMovieDetail.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchMovieDetail.fulfilled, (state, action) => {
+        state.detail = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(fetchMovieDetail.rejected, (state) => {
+        state.isLoading = false;
+      })
+
+      .addCase(fetchMovieVideos.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchMovieVideos.fulfilled, (state, action) => {
+        state.videos = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(fetchMovieVideos.rejected, (state) => {
+        state.isLoading = false;
+      });
   },
 });
 
-export const { login, logout } = authSlice.actions;
-export default authSlice.reducer;
+export const { clearMovieDetail, refresh,loadingMore } = movieSlice.actions;
+export default movieSlice.reducer;
