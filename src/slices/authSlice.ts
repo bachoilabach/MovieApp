@@ -7,14 +7,16 @@ type User = {
 };
 
 type AuthState = {
+  requestToken: string | null;
   sessionId: string | null;
-  user: User | null;
+  user: User | {};
   isLoggedIn: boolean;
 };
 
 const initialState: AuthState = {
+  requestToken: null,
   sessionId: null,
-  user: null,
+  user: {},
   isLoggedIn: false,
 };
 
@@ -22,18 +24,25 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<{ sessionId: string; user: User }>) => {
-      state.sessionId = action.payload.sessionId;
-      state.user = action.payload.user;
+    login: (state) => {
       state.isLoggedIn = true;
     },
-    logout: (state) => {
+    setUser: (state, action: PayloadAction<User>) => {
+      state.user = action.payload;
+    },
+    setSession(state, action: PayloadAction<string>) {
+      state.sessionId = action.payload;
+    },
+    setRequestToken(state, action: PayloadAction<string>) {
+      state.requestToken = action.payload;
+    },
+    clearAuth(state) {
       state.sessionId = null;
-      state.user = null;
-      state.isLoggedIn = false;
+      state.requestToken = null;
     },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, clearAuth, setSession, setUser, setRequestToken } =
+  authSlice.actions;
 export default authSlice.reducer;

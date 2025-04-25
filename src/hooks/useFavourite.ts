@@ -2,7 +2,7 @@ import { toastService } from "@/services/toast.services";
 import { useDispatch, useSelector } from "react-redux";
 import { useLogin } from "./useLogin";
 import { Status } from "./useShowToast";
-import { AppDispatch } from "@/config/store";
+import { AppDispatch } from "@/store/store";
 import { useEffect } from "react";
 import {
   addToFavourite,

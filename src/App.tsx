@@ -3,11 +3,12 @@ import { Asset } from "expo-asset";
 import * as SplashScreen from "expo-splash-screen";
 import * as React from "react";
 import { Navigation } from "./navigation";
-import ToastMessage from "./components/ToastMessage/ToastMessage";
-import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./components/ToastMessage/ToastProvider";
-import { Provider } from "react-redux";
-import { store } from "./config/store";
+import { Provider, useDispatch } from "react-redux";
+import { persistor, store } from "./store/store";
+import { setRequestToken, setSession } from "./slices/authSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { PersistGate } from "redux-persist/integration/react";
 
 Asset.loadAsync([
   ...NavigationAssets,
@@ -20,7 +21,8 @@ SplashScreen.preventAutoHideAsync();
 export function App() {
   return (
     <Provider store={store}>
-      <ToastProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <ToastProvider>
           <Navigation
             linking={{
               enabled: "auto",
@@ -30,7 +32,8 @@ export function App() {
               SplashScreen.hideAsync();
             }}
           />
-      </ToastProvider>
+        </ToastProvider>
+      </PersistGate>
     </Provider>
   );
 }

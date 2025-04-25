@@ -11,8 +11,6 @@ import React from 'react';
 import { StaticScreenProps } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import { useMovieDetail } from '../../hooks/useMovieDetail';
-import ToastMessage from '@/components/ToastMessage/ToastMessage';
-import { useShowToast } from '@/hooks/useShowToast';
 
 export type Props = StaticScreenProps<{
   id: number;

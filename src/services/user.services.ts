@@ -25,7 +25,7 @@ export const validateLogin = async (
   return res;
 };
 
-export const getSessionId = async (
+export const createSessionId = async (
   request_token: string
 ): Promise<SessionId> => {
   const res = await http.post<any, SessionId>("/authentication/session/new", {
