@@ -20,19 +20,19 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["auth"], 
+  blacklist: ["favourites", "movieDetail","movies"], 
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const middleware = (getDefaultMiddleware: any) =>
-  getDefaultMiddleware({
-    serializableCheck: false,
-  }).concat(logger);
+// const middleware = (getDefaultMiddleware: any) =>
+//   getDefaultMiddleware({
+//     serializableCheck: false,
+//   }).concat(logger);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware,
+  // middleware,
   devTools: __DEV__, 
 });
 
