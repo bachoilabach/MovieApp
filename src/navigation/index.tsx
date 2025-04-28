@@ -1,30 +1,31 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HeaderButton, Text } from '@react-navigation/elements';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { HeaderButton, Text } from "@react-navigation/elements";
 import {
   createStaticNavigation,
   StaticParamList,
-} from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image } from 'react-native';
-import bell from '../assets/bell.png';
-import { Home } from './screens/Home';
-import { Profile } from './screens/Profile';
-import { Settings } from './screens/Settings';
-import { Updates } from './screens/Updates';
-import { NotFound } from './screens/NotFound';
-import { HomeIcon, PaginationIcon, SettingIcon } from '../assets/svgIcons';
-import MovieDetail from './screens/MovieDetail';
-import { Pagination } from './screens/Pagination';
-import EditMovieModal from '@/modals/EditMovieModal';
-import Login from './screens/Login';
-
+} from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Image } from "react-native";
+import bell from "../assets/bell.png";
+import { Home } from "./screens/Home";
+import { Profile } from "./screens/Profile";
+import { Settings } from "./screens/Settings";
+import { Updates } from "./screens/Updates";
+import { NotFound } from "./screens/NotFound";
+import { HomeIcon, PaginationIcon, SettingIcon, SwipIcon } from "../assets/svgIcons";
+import MovieDetail from "./screens/MovieDetail";
+import { Pagination } from "./screens/Pagination";
+import EditMovieModal from "@/modals/EditMovieModal";
+import Login from "./screens/Login";
+import SwiperScreen from "./screens/Swiper";
+import SurveyForm from "@/modals/SurveyForm";
 
 const HomeTabs = createBottomTabNavigator({
   screens: {
     Home: {
       screen: Home,
       options: {
-        title: 'Home',
+        title: "Home",
         tabBarIcon: ({ color }) => <HomeIcon color={color} />,
       },
     },
@@ -43,18 +44,25 @@ const HomeTabs = createBottomTabNavigator({
         ),
       },
     },
-    Pagination: {
-      screen: Pagination,
-      options: {
-        title: 'Pagination',
-        tabBarIcon: ({ color }) => <PaginationIcon color={color} />,
-      },
-    },
+    // Pagination: {
+    //   screen: Pagination,
+    //   options: {
+    //     title: "Pagination",
+    //     tabBarIcon: ({ color }) => <PaginationIcon color={color} />,
+    //   },
+    // },
     Setting: {
       screen: Settings,
       options: {
-        title: 'Profile',
+        title: "Profile",
         tabBarIcon: ({ color }) => <SettingIcon color={color} />,
+      },
+    },
+    Swiper: {
+      screen: SwiperScreen,
+      options: {
+        title: "Swiper",
+        tabBarIcon: ({ color }) => <SwipIcon color={color} />,
       },
     },
   },
@@ -65,16 +73,16 @@ const RootStack = createNativeStackNavigator({
     HomeTabs: {
       screen: HomeTabs,
       options: {
-        title: 'Home',
+        title: "Home",
         headerShown: false,
       },
     },
     Profile: {
       screen: Profile,
       linking: {
-        path: ':user(@[a-zA-Z0-9-_]+)',
+        path: ":user(@[a-zA-Z0-9-_]+)",
         parse: {
-          user: (value) => value.replace(/^@/, ''),
+          user: (value) => value.replace(/^@/, ""),
         },
         stringify: {
           user: (value) => `@${value}`,
@@ -84,7 +92,7 @@ const RootStack = createNativeStackNavigator({
     Settings: {
       screen: Settings,
       options: ({ navigation }) => ({
-        presentation: 'modal',
+        presentation: "modal",
         headerRight: () => (
           <HeaderButton onPress={navigation.goBack}>
             <Text>Close</Text>
@@ -95,10 +103,10 @@ const RootStack = createNativeStackNavigator({
     NotFound: {
       screen: NotFound,
       options: {
-        title: '404',
+        title: "404",
       },
       linking: {
-        path: '*',
+        path: "*",
       },
     },
     MovieDetail: {
@@ -107,7 +115,7 @@ const RootStack = createNativeStackNavigator({
         headerShown: true,
       },
       linking: {
-        path: 'movie/:id',
+        path: "movie/:id",
         parse: {
           id: (id) => Number(id),
         },
@@ -119,7 +127,7 @@ const RootStack = createNativeStackNavigator({
     EditMovieModal: {
       screen: EditMovieModal,
       options: ({ navigation }) => ({
-        presentation: 'modal',
+        presentation: "modal",
         headerRight: () => (
           <HeaderButton onPress={navigation.goBack}>
             <Text>Close</Text>
@@ -130,7 +138,7 @@ const RootStack = createNativeStackNavigator({
     Login: {
       screen: Login,
       options: ({ navigation }) => ({
-        presentation: 'modal',
+        presentation: "modal",
         headerRight: () => (
           <HeaderButton onPress={navigation.goBack}>
             <Text>Close</Text>
@@ -138,6 +146,25 @@ const RootStack = createNativeStackNavigator({
         ),
       }),
     },
+    Swiper: {
+      screen: SwiperScreen,
+      options: {
+        headerShown: true,
+      },
+    },
+    SurveyForm: {
+      screen: SurveyForm,
+      options: ({ navigation }) => ({
+        headerShown: true,
+        title: "Survey Form",
+        presentation: "modal",
+        headerRight: () => (
+          <HeaderButton onPress={navigation.goBack}>
+            <Text>Close</Text>
+          </HeaderButton>
+        ),
+      }),
+    }
   },
 });
 

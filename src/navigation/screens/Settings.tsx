@@ -1,29 +1,52 @@
-import React from 'react';
-import { useAuth } from '@/context/AuthContext';
+import MovieItem from "@/components/Movie/MovieItem";
+import { useFavourite } from "@/hooks/useFavourite";
+import { useLogin } from "@/hooks/useLogin";
+import { useMovies } from "@/hooks/useMovies";
+import { useNavigation } from "@react-navigation/native";
 import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  Image,
+  FlatList,
   TouchableOpacity,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+  View,
+  Image,
+  Text,
+  StyleSheet,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
 
 export function Settings() {
-  const { sessionId, user, logout } = useAuth();
+  const { handleLogout } = useLogin();
+  const user = useSelector((state: any) => state.auth.user);
+  const sessionId = useSelector((state: any) => state.auth.sessionId);
   const navigation = useNavigation();
+  const { favourites } = useFavourite();
+
+  if (!sessionId || !user) {
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.loginBtn}
+          onPress={() => navigation.navigate("Login")}
+        >
+          <Text style={styles.textLogout}>Go to Login</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      {sessionId && user ? (
-        <View style={styles.innerContainer}>
-          <View>
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={favourites}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <MovieItem {...item} />}
+        ListHeaderComponent={
+          <>
             <Text style={styles.title}>User Info</Text>
             <View style={styles.row}>
               <Image
                 source={{
-                  uri: 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg',
+                  uri: "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg",
                 }}
                 style={styles.image}
               />
@@ -33,57 +56,51 @@ export function Settings() {
                   Username: {user.username}
                 </Text>
                 <Text style={styles.information}>
-                  Name: {user.name || 'No name'}
+                  Name: {user.name || "No name"}
                 </Text>
               </View>
             </View>
-          </View>
-          <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
-            <Text style={styles.textLogout}>Log out</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <TouchableOpacity style={styles.loginBtn} onPress={()=>navigation.navigate('Login')}>
-          <Text style={styles.textLogout}>Go to Login</Text>
+            <Text style={styles.subTitle}>Favourite Movies</Text>
+            {favourites?.length === 0 && (
+              <Text style={{ fontStyle: "italic", color: "#777" }}>
+                No favourite movies yet.
+              </Text>
+            )}
+          </>
+        }
+        contentContainerStyle={{ paddingBottom: 140 }}
+        onEndReachedThreshold={0.5}
+      />
+
+      <View style={styles.logoutContainer}>
+        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+          <Text style={styles.textLogout}>Log out</Text>
         </TouchableOpacity>
-      )}
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-  },
-  innerContainer: {
-    flex: 1,
-    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    backgroundColor: "#fff",
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
+    marginBottom: 10,
   },
   title: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 10,
   },
-  logoutBtn: {
-    paddingVertical: 20,
-    backgroundColor: '#FF3030',
-    borderRadius: 10,
-  },
-  textLogout: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 20,
-    fontWeight: '500',
-  },
-  loginBtn: {
-    paddingVertical: 20,
-    backgroundColor: '#00F5FF',
-    borderRadius: 10,
+  subTitle: {
+    fontSize: 16,
+    fontWeight: "500",
+    marginVertical: 12,
   },
   image: {
     width: 64,
@@ -92,5 +109,33 @@ const styles = StyleSheet.create({
   },
   information: {
     fontSize: 16,
+  },
+  textLogout: {
+    textAlign: "center",
+    color: "white",
+    fontSize: 20,
+    fontWeight: "500",
+  },
+  logoutBtn: {
+    paddingVertical: 16,
+    backgroundColor: "#FF3030",
+    borderRadius: 12,
+    marginBottom: 10,
+  },
+  logoutContainer: {
+    position: "absolute",
+    left: 20,
+    right: 20,
+    bottom: 20,
+  },
+  loginBtn: {
+    paddingVertical: 20,
+    backgroundColor: "#00F5FF",
+    borderRadius: 10,
+    position: "absolute",
+    top: 0,
+    width: "100%",
+    marginTop: 20,
+    marginLeft: 16,
   },
 });

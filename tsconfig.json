@@ -14,7 +14,8 @@
       "@screens/*": ["navigation/screens/*"],
       "@config/*":["config/*"],
       "@hooks/*": ["hooks/*"],
-      "@context/*": ["context/*"]
+      "@context/*": ["context/*"],
+      "@store/*": ["store/*"],
     }
   }
 }

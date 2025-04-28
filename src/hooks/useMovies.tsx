@@ -1,60 +1,50 @@
-import { Movie, MovieListResponse } from '@/models/movie.model';
-import { getAllMovie } from '@/services/movie.services';
-import { useEffect, useState } from 'react';
-import { Status } from './useShowToast';
-import { showToast } from '@/services/toast.services';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { fetchMovies, loadingMore, refresh } from "@/slices/movieSlice";
+import {
+  selectCurrentPage,
+  selectIsLoading,
+  selectIsRefreshing,
+  selectMovies,
+  selectTotalPages,
+} from "@/store/Selector/MovieSelector";
 
-type Update = {
-  isRefresh: boolean;
-  isLoadingMore: boolean;
-};
 export const useMovies = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const [isUpdating, setIsUpdating] = useState<Update>({
-    isRefresh: false,
-    isLoadingMore: false,
-  });
-
-  const pullToRefresh = async () => {
-    setIsUpdating((prev) => ({ ...prev, isRefresh: true }));
-    await handleGetAllMovie(1);
-  };
-
-  const loadMoreMovie = async () => {
-    if (!isUpdating.isLoadingMore) {
-      const nextPage = page + 1;
-      setIsUpdating((prev) => ({ ...prev, isLoadingMore: true }));
-      setPage(nextPage);
-      await handleGetAllMovie(nextPage);
-    }
-  };
-
-  const handleGetAllMovie = async (pageToFetch: number) => {
-    try {
-      const response: MovieListResponse = await getAllMovie(pageToFetch);
-      if (pageToFetch === 1) {
-        setMovies(response.results);
-      } else {
-        setMovies((prev) => [...prev, ...response.results]);
-      }
-      setIsUpdating((prev) => ({
-        ...prev,
-        isRefresh: false,
-        isLoadingMore: false,
-      }));
-    } catch (error: any) {
-      showToast(Status.error, error.message);
-    }
-  };
+  const dispatch = useDispatch<AppDispatch>();
+  const movies = useSelector(selectMovies);
+  const isLoading = useSelector(selectIsLoading);
+  const isLoadingMore = useSelector(selectIsLoading);
+  const currentPage = useSelector(selectCurrentPage);
+  const totalPages = useSelector(selectTotalPages);
+  const isRefreshing = useSelector(selectIsRefreshing);
 
   useEffect(() => {
-    handleGetAllMovie(page);
-  }, []);
+    handleGetAllMovies();
+  }, [dispatch]);
+  const handleGetAllMovies = () => {
+    dispatch(fetchMovies(1));
+  };
+
+  const pullToRefresh =  () => {
+    dispatch(refresh(true));
+    dispatch(fetchMovies(1));
+    dispatch(refresh(false));
+  };
+
+  const loadMoreMovie = () => {
+    dispatch(loadingMore(true));
+    if (!isLoadingMore && currentPage < totalPages) {
+      dispatch(fetchMovies(currentPage + 1));
+    }
+    dispatch(loadingMore(false));
+  };
   return {
     movies,
-    isUpdating,
+    isLoading,
     pullToRefresh,
     loadMoreMovie,
+    isRefreshing,
+    isLoadingMore,
   };
 };

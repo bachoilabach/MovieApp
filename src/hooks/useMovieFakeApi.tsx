@@ -2,7 +2,7 @@ import { Movie, MovieDetail } from '@/models/movie.model';
 import { getMovieFakeApi } from '@/services/movie.services';
 import { useEffect, useState } from 'react';
 import { Status } from './useShowToast';
-import { showToast } from '@/services/toast.services';
+import { toastService } from '../services/toast.services';
 
 export const useMovieFakeApi = () => {
   const [movies, setMovies] = useState<MovieDetail[]>([]);
@@ -18,7 +18,7 @@ export const useMovieFakeApi = () => {
       const response = await getMovieFakeApi();
       setMovies(response);
     } catch (error: any) {
-      showToast(Status.error, error.message);
+      toastService.showToast(Status.error, error.message);
     }
   };
 

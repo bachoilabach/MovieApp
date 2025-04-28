@@ -7,51 +7,22 @@ export enum Status {
 }
 
 export const useShowToast = () => {
-  const top = useRef(new Animated.Value(-50)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
-  const [message, setMessage] = useState<string>('');
+  const [message, setMessage] = useState('');
   const [status, setStatus] = useState<Status>(Status.success);
+  const [visible, setVisible] = useState(false);
 
-  const showToast = (status: Status, message: string) => {
-    console.log(status,message)
+  const showToast = (status: Status, msg: string) => {
     setStatus(status);
-    setMessage(message);
-    Animated.parallel([
-      Animated.timing(top, {
-        toValue: 50,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-    ]).start(() => {
-      setTimeout(() => hideToast(), 3000);
-    });
-  };
-
-  const hideToast = () => {
-    Animated.parallel([
-      Animated.timing(top, {
-        toValue: -50,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-    ]).start();
+    setMessage(msg);
+    setVisible(true);
+    setTimeout(() => setVisible(false), 3500);
   };
 
   return {
-    top,
-    opacity,
+    visible,
     message,
     status,
     showToast,
   };
 };
+
