@@ -1,4 +1,3 @@
-// store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
 import { persistStore, persistReducer } from "redux-persist";
@@ -25,14 +24,10 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// const middleware = (getDefaultMiddleware: any) =>
-//   getDefaultMiddleware({
-//     serializableCheck: false,
-//   }).concat(logger);
+
 
 export const store = configureStore({
   reducer: persistedReducer,
-  // middleware,
   devTools: __DEV__, 
 });
 

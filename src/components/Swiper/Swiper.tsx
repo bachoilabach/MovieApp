@@ -5,17 +5,31 @@ import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import { useSwiper } from "@/hooks/useSwiper";
-import SwiperFlatListItem from "./SwiperFlatListItem";
-import { getImages } from "@/services/image.services";
+import moviesData from "db.json";
 import MovieCard from "../Movie/MovieCard";
-import { getAllMovie } from "@/services/movie.services";
-import moviesData from 'db.json'
-const SwiperFlatList = () => {
-  const { swiperRef, items, handleNext, handlePrev, loading } = useSwiper({
-    data: moviesData.movies,
-    // handleGetData:() => getImages(),
+import { useRef } from "react";
+import { defaultSwiperOptions } from "@/constants/swiperConfig";
+import SwiperItem from "./SwiperItem";
+import { getImages, ImageResponse } from "@/services/image.services";
+import { Movie } from "@/models/movie.model";
+const { width } = Dimensions.get("window");
+const Swiper = () => {
+  const swiperRef = useRef<FlatList>(null);
+  const {
+    items,
+    handleNext,
+    handlePrev,
+    loading,
+    handleMomentumScrollEnd,
+    handleScrollBeginDrag,
+    handleScrollEndDrag,
+  } = useSwiper<ImageResponse>({
+    // data: moviesData.movies,
+    handleGetData: () => getImages(),
+    swiperRef: swiperRef,
   });
   return (
     <View style={styles.container}>
@@ -33,12 +47,18 @@ const SwiperFlatList = () => {
           data={items}
           ref={swiperRef}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <MovieCard {...item} />}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          pagingEnabled
-          snapToAlignment="center"
-          decelerationRate="fast"
+          renderItem={({ item }) => (
+            <View
+              style={{ width, alignItems: "center"}}
+            >
+              <SwiperItem {...item} />
+            </View>
+          )}
+          {...defaultSwiperOptions}
+          onMomentumScrollEnd={handleMomentumScrollEnd}
+          onScrollBeginDrag={handleScrollBeginDrag}
+          onScrollEndDrag={handleScrollEndDrag}
+          snapToInterval={width}
         />
       )}
       <TouchableOpacity
@@ -51,15 +71,13 @@ const SwiperFlatList = () => {
   );
 };
 
-export default SwiperFlatList;
+export default Swiper;
 
 const styles = StyleSheet.create({
   container: {
-    paddingRight: 20,
-    paddingLeft: 10,
+    paddingHorizontal: 12,
     paddingTop: 10,
     position: "relative",
-    width: "100%",
   },
   button: {
     padding: 0,

@@ -17,7 +17,8 @@ import MovieDetail from "./screens/MovieDetail";
 import { Pagination } from "./screens/Pagination";
 import EditMovieModal from "@/modals/EditMovieModal";
 import Login from "./screens/Login";
-import Swiper from "./screens/Swiper";
+import SwiperScreen from "./screens/Swiper";
+import SurveyForm from "@/modals/SurveyForm";
 
 const HomeTabs = createBottomTabNavigator({
   screens: {
@@ -43,13 +44,13 @@ const HomeTabs = createBottomTabNavigator({
         ),
       },
     },
-    Pagination: {
-      screen: Pagination,
-      options: {
-        title: "Pagination",
-        tabBarIcon: ({ color }) => <PaginationIcon color={color} />,
-      },
-    },
+    // Pagination: {
+    //   screen: Pagination,
+    //   options: {
+    //     title: "Pagination",
+    //     tabBarIcon: ({ color }) => <PaginationIcon color={color} />,
+    //   },
+    // },
     Setting: {
       screen: Settings,
       options: {
@@ -58,7 +59,7 @@ const HomeTabs = createBottomTabNavigator({
       },
     },
     Swiper: {
-      screen: Swiper,
+      screen: SwiperScreen,
       options: {
         title: "Swiper",
         tabBarIcon: ({ color }) => <SwipIcon color={color} />,
@@ -146,10 +147,23 @@ const RootStack = createNativeStackNavigator({
       }),
     },
     Swiper: {
-      screen: Swiper,
+      screen: SwiperScreen,
       options: {
         headerShown: true,
       },
+    },
+    SurveyForm: {
+      screen: SurveyForm,
+      options: ({ navigation }) => ({
+        headerShown: true,
+        title: "Survey Form",
+        presentation: "modal",
+        headerRight: () => (
+          <HeaderButton onPress={navigation.goBack}>
+            <Text>Close</Text>
+          </HeaderButton>
+        ),
+      }),
     }
   },
 });

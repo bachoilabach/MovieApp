@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   View,
   Image,
-  ActivityIndicator,
   Text,
   StyleSheet,
 } from "react-native";
@@ -18,9 +17,9 @@ import { useSelector } from "react-redux";
 export function Settings() {
   const { handleLogout } = useLogin();
   const user = useSelector((state: any) => state.auth.user);
-    const sessionId = useSelector((state: any) => state.auth.sessionId);
+  const sessionId = useSelector((state: any) => state.auth.sessionId);
   const navigation = useNavigation();
-  const { favourites,  } = useFavourite();
+  const { favourites } = useFavourite();
 
   if (!sessionId || !user) {
     return (
@@ -69,14 +68,7 @@ export function Settings() {
             )}
           </>
         }
-        // ListFooterComponent={
-        //   isUpdating.isLoadingMore ? (
-        //     <ActivityIndicator style={{ marginVertical: 16 }} />
-        //   ) : null
-        // }
         contentContainerStyle={{ paddingBottom: 140 }}
-        // refreshing={isUpdating.isRefresh}
-        // onRefresh={pullToRefresh}
         onEndReachedThreshold={0.5}
       />
 
@@ -93,7 +85,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     backgroundColor: "#fff",
-    
   },
   row: {
     flexDirection: "row",
@@ -143,8 +134,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     position: "absolute",
     top: 0,
-    width: '100%',
+    width: "100%",
     marginTop: 20,
-    marginLeft: 16
+    marginLeft: 16,
   },
 });

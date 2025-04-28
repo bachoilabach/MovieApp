@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Image,
@@ -14,7 +14,7 @@ type SwiperItemProps = {
 
 const { width } = Dimensions.get("window");
 
-const SwiperFlatListItem = ({ id, url }: SwiperItemProps) => {
+const SwiperItem = ({ id, url }: SwiperItemProps) => {
   const [loading, setLoading] = useState(true);
   return (
     <View style={styles.container}>
@@ -34,25 +34,27 @@ const SwiperFlatListItem = ({ id, url }: SwiperItemProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: width - 20,
+    width: width,
     height: 300,
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
     position: "relative",
-    justifyContent: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
   image: {
     width: "100%",
     height: "100%",
     borderRadius: 8,
+    paddingHorizontal: 10,
   },
   loader: {
     position: "absolute",
-    height: '100%',
-    width: '100%',
-    backgroundColor: '#fff',
+    height: "100%",
+    width: "100%",
+    backgroundColor: "#fff",
     left: 10,
     borderRadius: 8,
   },
 });
 
-export default SwiperFlatListItem;
+export default SwiperItem;

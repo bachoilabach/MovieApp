@@ -1,15 +1,15 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import SwiperFlatList from "@/components/SwiperFlastList/SwiperFlatList";
+import Swiper from "@/components/Swiper/Swiper";
 
-const Swiper = () => {
+const SwiperScreen = () => {
   return (
     <>
-      <SwiperFlatList />
+      <Swiper />
     </>
   );
 };
 
-export default Swiper;
+export default SwiperScreen;
 
 const styles = StyleSheet.create({});

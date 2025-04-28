@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   View,
   TextInput,
-  Button,
   Text,
-  Alert,
   StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView,
