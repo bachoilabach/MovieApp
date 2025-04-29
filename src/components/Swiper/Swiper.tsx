@@ -26,9 +26,9 @@ const Swiper = () => {
     handleMomentumScrollEnd,
     handleScrollBeginDrag,
     handleScrollEndDrag,
-  } = useSwiper<ImageResponse>({
-    // data: moviesData.movies,
-    handleGetData: () => getImages(),
+  } = useSwiper<Movie>({
+    data: moviesData.movies,
+    // handleGetData: () => getImages(),
     swiperRef: swiperRef,
   });
   return (
@@ -51,7 +51,7 @@ const Swiper = () => {
             <View
               style={{ width, alignItems: "center"}}
             >
-              <SwiperItem {...item} />
+              <MovieCard {...item} />
             </View>
           )}
           {...defaultSwiperOptions}

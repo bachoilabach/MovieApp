@@ -3,6 +3,7 @@ import { FlatList, NativeSyntheticEvent, NativeScrollEvent } from "react-native"
 import { toastService } from "@/services/toast.services";
 import { Status } from "./useShowToast";
 import { ImageResponse } from "@/services/image.services";
+import { Movie } from "@/models/movie.model";
 
 type UseSwiperProps<T> = {
   data?: T[];
@@ -11,7 +12,7 @@ type UseSwiperProps<T> = {
   autoScrollInterval?: number;
 };
 
-export const useSwiper = <T = ImageResponse>({
+export const useSwiper = <T = Movie>({
   data,
   handleGetData,
   swiperRef,

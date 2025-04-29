@@ -16,7 +16,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.bachoilabach.myapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,7 +31,20 @@
           "image": "./assets/splash-icon.png"
         }
       ],
-      "react-native-edge-to-edge"
-    ]
+      "react-native-edge-to-edge",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "1.9.25"
+          }
+        } 
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4825b927-0ccc-4987-a498-0f43561bc0f3"
+      }
+    }
   }
 }
