@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import { Controller } from "react-hook-form";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useInput } from "@/hooks/useInput";
@@ -47,8 +47,8 @@ const DateInput = ({
               mode={mode}
               display="spinner"
               date={value || new Date()}
-              maximumDate={minimumDate}
-              minimumDate={maximumDate}
+              maximumDate={maximumDate}
+              minimumDate={minimumDate}
               onConfirm={(selectedDate) => {
                 setDatePickerVisibility(false);
                 onChange(selectedDate);
