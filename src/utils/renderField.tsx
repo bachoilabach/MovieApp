@@ -50,6 +50,7 @@ export const renderField = (field: any, control: any, errors: any) => {
     case "switch":
       return (
         <CustomeSwitch
+          key={field.name}
           title={field.title}
           name={field.name}
           control={control}

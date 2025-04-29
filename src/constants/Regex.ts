@@ -4,3 +4,5 @@ export const fullNameVietNamese: RegExp =
 export const emailRegex : RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
 
 export const phoneNumberVietNam: RegExp = /^(0|\+84)[3-9]\d{8}$/
+
+export const number : RegExp = /^\d+$/

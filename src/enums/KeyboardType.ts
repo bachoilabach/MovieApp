@@ -3,4 +3,5 @@ export enum KeyboardType {
     NUMERIC = "numeric",
     EMAIL = "email-address",
     PHONE = "phone-pad",
+    NUMPAD = 'number_pad'
   }

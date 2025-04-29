@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput } from "react-native";
 import React from "react";
 import { Controller } from "react-hook-form";
 import { KeyboardType } from "@/enums/KeyboardType";

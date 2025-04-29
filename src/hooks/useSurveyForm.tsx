@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import {
   emailRegex,
   fullNameVietNamese,
+  number,
   phoneNumberVietNam,
 } from "@/constants/Regex";
 import { Mode } from "@/components/Input/DateInput";
@@ -60,24 +61,27 @@ export function useSurveyForm() {
       };
       await submitSurveys(surveyWithId);
       toastService.showToast(Status.success, "Submit Success");
-      reset({
-        fullName: "",
-        email: "",
-        age: 10,
-        gender: Gender.MALE,
-        feedback: "",
-        phoneNumber: "",
-        dateOfBirth: new Date(),
-        rating: 5,
-        today: new Date(),
-        color: Color.RED,
-        agree: false,
-      });
-
+      handelResetForm()
       navigation.goBack();
     } catch (error: any) {
       toastService.showToast(Status.error, error.message);
     }
+  };
+
+  const handelResetForm = () => {
+    reset({
+      fullName: "",
+      email: "",
+      age: 10,
+      gender: Gender.MALE,
+      feedback: "",
+      phoneNumber: "",
+      dateOfBirth: new Date(),
+      rating: 5,
+      today: new Date(),
+      color: Color.RED,
+      agree: false,
+    });
   };
 
   const surveyFormFields = [
@@ -113,9 +117,11 @@ export function useSurveyForm() {
       title: "Age",
       name: "age",
       requiredMessage: "Age is required",
+      regex: number,
+      patternMessage: 'Age is not contain character',
       minValue: 10,
       maxValue: 100,
-      keyboardType: KeyboardType.NUMERIC,
+      keyboardType: KeyboardType.NUMPAD,
       placeholder: "Enter your age",
     },
     {
@@ -184,6 +190,12 @@ export function useSurveyForm() {
       setLoading(false);
     }
   };
+
+  useEffect(()=>{
+    return ()=> {
+      handelResetForm()
+    }
+  },[])
 
   const pullToRefresh = async () => {
     setRefresh(true);
