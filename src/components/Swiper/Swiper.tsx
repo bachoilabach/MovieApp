@@ -8,16 +8,16 @@ import {
   Dimensions,
 } from "react-native";
 import { useSwiper } from "@/hooks/useSwiper";
-import moviesData from "db.json";
-import MovieCard from "../Movie/MovieCard";
-import { useRef } from "react";
+import { RefObject } from "react";
 import { defaultSwiperOptions } from "@/constants/swiperConfig";
-import SwiperItem from "./SwiperItem";
-import { getImages, ImageResponse } from "@/services/image.services";
-import { Movie } from "@/models/movie.model";
 const { width } = Dimensions.get("window");
-const Swiper = () => {
-  const swiperRef = useRef<FlatList>(null);
+type SwiperProps<T> = {
+  Component: React.ComponentType<T>;
+  handleGetData?: () => Promise<T[]>;
+  data?: T[];
+  swiperRef: RefObject<FlatList<T>>;
+};
+const Swiper = <T,>({ Component, handleGetData, data, swiperRef }: SwiperProps<T>) => {
   const {
     items,
     handleNext,
@@ -26,9 +26,9 @@ const Swiper = () => {
     handleMomentumScrollEnd,
     handleScrollBeginDrag,
     handleScrollEndDrag,
-  } = useSwiper<Movie>({
-    data: moviesData.movies,
-    // handleGetData: () => getImages(),
+  } = useSwiper({
+    data: data,
+    handleGetData: handleGetData,
     swiperRef: swiperRef,
   });
   return (
@@ -48,10 +48,8 @@ const Swiper = () => {
           ref={swiperRef}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <View
-              style={{ width, alignItems: "center"}}
-            >
-              <MovieCard {...item} />
+            <View style={{ width, alignItems: "center" }}>
+              <Component {...item} />
             </View>
           )}
           {...defaultSwiperOptions}

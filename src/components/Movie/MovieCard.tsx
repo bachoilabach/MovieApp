@@ -25,8 +25,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     borderRadius: 12,
-    width: width - 40,  // đúng rồi, không sửa
-    overflow: "hidden",
+    width: width - 40, //reduce movie card width
     paddingBottom: 20,
   },  
   image: {

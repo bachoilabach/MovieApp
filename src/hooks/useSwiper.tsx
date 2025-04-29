@@ -1,9 +1,14 @@
 import { RefObject, useEffect, useRef, useState, useCallback } from "react";
-import { FlatList, NativeSyntheticEvent, NativeScrollEvent } from "react-native";
+import {
+  FlatList,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from "react-native";
 import { toastService } from "@/services/toast.services";
 import { Status } from "./useShowToast";
 import { ImageResponse } from "@/services/image.services";
 import { Movie } from "@/models/movie.model";
+import { useFocusEffect } from "@react-navigation/native";
 
 type UseSwiperProps<T> = {
   data?: T[];
@@ -12,7 +17,7 @@ type UseSwiperProps<T> = {
   autoScrollInterval?: number;
 };
 
-export const useSwiper = <T = Movie>({
+export const useSwiper = <T,>({
   data,
   handleGetData,
   swiperRef,
@@ -21,36 +26,41 @@ export const useSwiper = <T = Movie>({
   const [items, setItems] = useState<T[]>(data || []);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(!data || false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const isUserInteracting = useRef<boolean>(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null); // time
+  const isUserInteracting = useRef<boolean>(false); // User scoll
 
   const scrollToIndex = (index: number) => {
-    if (!swiperRef.current) return;
-    swiperRef.current.scrollToIndex({ index, animated: true, viewPosition: 0.5});
+    if (!swiperRef.current) {
+      toastService.showToast(Status.error, "Do not have ref");
+      return;
+    }
+    swiperRef.current.scrollToIndex({
+      index,
+      animated: true,
+      viewPosition: 0.5,
+    });
   };
 
-  const handleNext = useCallback(() => {
+  const handleNext = () => {
     if (!items || items.length === 0) return;
     const nextIndex = (currentIndex + 1) % items.length;
     scrollToIndex(nextIndex);
     setCurrentIndex(nextIndex);
-  }, [currentIndex, items]);
+  };
 
-  const handlePrev = useCallback(() => {
+  const handlePrev = () => {
     if (!items || items.length === 0) return;
-    const prevIndex = (currentIndex - 1 + items.length) % items.length;
+    const prevIndex = (currentIndex + items.length) % items.length;//bỏ - 1 currInd vì khi set lại ở dưới đã -1 rồi 
     scrollToIndex(prevIndex);
     setCurrentIndex(prevIndex);
-  }, [currentIndex, items]);
+  };
 
-  const startAutoScroll = useCallback(() => {
+  const startAutoScroll = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
-      if (!isUserInteracting.current) {
-        handleNext();
-      }
+      handleNext();
     }, autoScrollInterval);
-  }, [handleNext, autoScrollInterval]);
+  };
 
   const stopAutoScroll = () => {
     if (intervalRef.current) {
@@ -64,7 +74,7 @@ export const useSwiper = <T = Movie>({
       try {
         setLoading(true);
         const res = await handleGetData();
-        setItems([...res, ...res]);
+        setItems(res);
       } catch (err) {
         toastService.showToast(Status.error, "Error fetching swiper data");
       } finally {
@@ -73,34 +83,35 @@ export const useSwiper = <T = Movie>({
     }
   };
 
-  const handleMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+  const handleMomentumScrollEnd = (
+    event: NativeSyntheticEvent<NativeScrollEvent>
+  ) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
     const layoutWidth = event.nativeEvent.layoutMeasurement.width;
-    const newIndex = Math.round(contentOffsetX / layoutWidth);
+    const newIndex = Math.floor(contentOffsetX / layoutWidth) - 1; // lỗi khi chi theo việc cuộn bị nhảy cách phần tử phải trừ 1 đặt index bắt đầu bằng -1
     setCurrentIndex(newIndex);
-    isUserInteracting.current = false; 
+    isUserInteracting.current = false;
   };
 
   const handleScrollBeginDrag = () => {
-    isUserInteracting.current = true; 
+    isUserInteracting.current = true;
     stopAutoScroll();
-    
   };
 
   const handleScrollEndDrag = () => {
-    startAutoScroll(); 
+    startAutoScroll();
   };
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (items.length > 1) {
-      startAutoScroll();
-    }
-    return () => stopAutoScroll();
-  }, [items, startAutoScroll]);
+  useFocusEffect(() => {
+    startAutoScroll();
+    return () => {
+      stopAutoScroll();
+    };
+  });
 
   return {
     loading,
