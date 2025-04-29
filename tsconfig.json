@@ -16,6 +16,7 @@
       "@hooks/*": ["hooks/*"],
       "@context/*": ["context/*"],
       "@store/*": ["store/*"],
+      "@enums/*": ["enums/*"]
     }
   }
 }
