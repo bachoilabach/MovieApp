@@ -17,7 +17,12 @@ type SwiperProps<T> = {
   data?: T[];
   swiperRef: RefObject<FlatList<T>>;
 };
-const Swiper = <T,>({ Component, handleGetData, data, swiperRef }: SwiperProps<T>) => {
+const Swiper = <T,>({
+  Component,
+  handleGetData,
+  data,
+  swiperRef,
+}: SwiperProps<T>) => {
   const {
     items,
     handleNext,

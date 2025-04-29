@@ -1,15 +1,9 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import React from "react";
 import { Controller } from "react-hook-form";
+import { KeyboardType } from "@/enums/KeyboardType";
 
-export enum keyboardType {
-  DEFAULT = "default",
-  NUMERIC = "numeric",
-  EMAIL = "email-address",
-  PHONE = "phone-pad",
-}
-
-interface CustomFormInputProps{
+interface CustomFormInputProps {
   title: string;
   control: any;
   name: string;
@@ -18,28 +12,29 @@ interface CustomFormInputProps{
   patternMessage?: string;
   errors: any;
   placeholder?: string;
-  keyboardType?: keyboardType;
+  keyboardType?: KeyboardType;
   multiline?: boolean;
   minValue?: number;
   maxValue?: number;
-  maxLength?: number
-};
+  maxLength?: number;
+}
 
-const CustomFormInput = ({
-  title,
-  control,
-  name,
-  requiredMessage,
-  regex,
-  patternMessage,
-  errors,
-  placeholder,
-  keyboardType,
-  multiline = false,
-  minValue,
-  maxValue,
-  maxLength
-}: CustomFormInputProps) => {
+const CustomFormInput = (props: CustomFormInputProps) => {
+  const {
+    title,
+    control,
+    name,
+    requiredMessage,
+    regex,
+    patternMessage,
+    errors,
+    placeholder,
+    keyboardType,
+    multiline = false,
+    minValue,
+    maxValue,
+    maxLength,
+  } = props;
   return (
     <>
       <Text style={styles.title}>{title}</Text>
@@ -71,7 +66,11 @@ const CustomFormInput = ({
         render={({ field: { onChange, value } }) => (
           <>
             <TextInput
-              style={[styles.input, errors[name] && { borderColor: "red" }, multiline && {height: 100}]}
+              style={[
+                styles.input,
+                errors[name] && { borderColor: "red" },
+                multiline && { height: 100 },
+              ]}
               placeholder={placeholder || `Enter your ${title.toLowerCase()}`}
               value={value}
               onChangeText={onChange}

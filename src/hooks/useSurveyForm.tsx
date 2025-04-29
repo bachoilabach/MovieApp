@@ -2,32 +2,26 @@ import { toastService } from "@/services/toast.services";
 import { useForm } from "react-hook-form";
 import { Status } from "./useShowToast";
 import { useNavigation } from "@react-navigation/native";
-import { emailRegex, fullNameVietNamese, phoneNumberVietNam } from "@/constants/Regex";
-import { keyboardType } from "@/components/Input/CustomFormInput";
+import {
+  emailRegex,
+  fullNameVietNamese,
+  phoneNumberVietNam,
+} from "@/constants/Regex";
 import { Mode } from "@/components/Input/DateInput";
 import { Gender } from "@/enums/Gender";
 import { Color } from "@/enums/Color";
 import { FieldType } from "@/enums/FieldType";
-
-export type SurveyFormProps = {
-  fullName: string;
-  email: string;
-  age: number;
-  gender: Gender;
-  feedback: string;
-  phoneNumber: string;
-  dateOfBirth: Date;
-  rating: number;
-  today: Date;
-  color: string;
-  agree: boolean
-};
+import { SurveyResponse } from "@/models/survey.model";
+import { useEffect, useState } from "react";
+import { fetchSurvey, submitSurveys } from "@/services/survey.services";
+import { KeyboardType } from "@/enums/KeyboardType";
 export function useSurveyForm() {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<SurveyFormProps>({
+    reset,
+  } = useForm<SurveyResponse>({
     defaultValues: {
       fullName: "",
       email: "",
@@ -39,10 +33,13 @@ export function useSurveyForm() {
       rating: 5,
       today: new Date(),
       color: Color.RED,
-      agree: false
+      agree: false,
     },
   });
   const navigation = useNavigation();
+  const [surveys, setSurveys] = useState<SurveyResponse[]>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isRefreshing, setRefresh] = useState<boolean>(false);
 
   function convertToArray(object: object) {
     const items = Object.entries(object).map(([key, value]) => ({
@@ -51,13 +48,36 @@ export function useSurveyForm() {
     }));
     return items;
   }
+
   const genderItems = convertToArray(Gender);
   const colorItems = convertToArray(Color);
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    toastService.showToast(Status.success, "Submit Success");
-    navigation.goBack();
+  const onSubmit = async (data: any) => {
+    try {
+      const surveyWithId = {
+        id: Date.now(),
+        ...data,
+      };
+      await submitSurveys(surveyWithId);
+      toastService.showToast(Status.success, "Submit Success");
+      reset({
+        fullName: "",
+        email: "",
+        age: 10,
+        gender: Gender.MALE,
+        feedback: "",
+        phoneNumber: "",
+        dateOfBirth: new Date(),
+        rating: 5,
+        today: new Date(),
+        color: Color.RED,
+        agree: false,
+      });
+
+      navigation.goBack();
+    } catch (error: any) {
+      toastService.showToast(Status.error, error.message);
+    }
   };
 
   const surveyFormFields = [
@@ -79,7 +99,7 @@ export function useSurveyForm() {
       regex: emailRegex,
       patternMessage: "Invalid email address",
       placeholder: "Enter your email",
-      keyboardType: keyboardType.EMAIL,
+      keyboardType: KeyboardType.EMAIL,
     },
     {
       type: FieldType.SELECT,
@@ -95,7 +115,7 @@ export function useSurveyForm() {
       requiredMessage: "Age is required",
       minValue: 10,
       maxValue: 100,
-      keyboardType: keyboardType.NUMERIC,
+      keyboardType: KeyboardType.NUMERIC,
       placeholder: "Enter your age",
     },
     {
@@ -127,7 +147,7 @@ export function useSurveyForm() {
       requiredMessage: "Phone Number is required",
       regex: phoneNumberVietNam,
       patternMessage: "Invalid Vietnamese phone number",
-      keyboardType: keyboardType.PHONE,
+      keyboardType: KeyboardType.PHONE,
       placeholder: "Enter your phone number",
     },
     {
@@ -137,7 +157,7 @@ export function useSurveyForm() {
       requiredMessage: "Rating is required",
       minValue: 1,
       maxValue: 10,
-      keyboardType: keyboardType.NUMERIC,
+      keyboardType: KeyboardType.NUMERIC,
       placeholder: "Rate us (1-10)",
     },
     {
@@ -148,17 +168,43 @@ export function useSurveyForm() {
     },
     {
       type: FieldType.SWITCH,
-      title: 'Agree',
-      name: 'agree',
-    }
+      title: "Agree",
+      name: "agree",
+    },
   ];
-  
+
+  const handleGetAllSurveys = async () => {
+    try {
+      setLoading(true);
+      const res = await fetchSurvey();
+      setSurveys(res);
+    } catch (error: any) {
+      toastService.showToast(Status.error, error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const pullToRefresh = async () => {
+    setRefresh(true);
+    await handleGetAllSurveys();
+    setRefresh(false);
+  };
+
+  useEffect(() => {
+    handleGetAllSurveys();
+  }, []);
+
   return {
     control,
     errors,
     genderItems,
     colorItems,
     onSubmit: handleSubmit(onSubmit),
-    surveyFormFields
+    surveyFormFields,
+    loading,
+    surveys,
+    isRefreshing,
+    pullToRefresh,
   };
 }

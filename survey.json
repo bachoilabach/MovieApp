@@ -1,5 +1,74 @@
 {
-    "surveys": [
-        
-    ]
+  "surveys": [
+    {
+      "id": 1745916635033,
+      "fullName": "bach",
+      "email": "bach@gmail.com",
+      "age": "22",
+      "gender": "male",
+      "feedback": "jasjkdhajkd",
+      "phoneNumber": "0346331968",
+      "dateOfBirth": "2025-04-29T08:49:59.317Z",
+      "rating": "10",
+      "today": "2025-04-29T08:49:59.317Z",
+      "color": "red",
+      "agree": false
+    },
+    {
+      "id": 1745916680872,
+      "fullName": "bach",
+      "email": "bach@gmail.com",
+      "age": "22",
+      "gender": "male",
+      "feedback": "",
+      "phoneNumber": "0346311968",
+      "dateOfBirth": "2025-04-29T08:51:04.765Z",
+      "rating": 5,
+      "today": "2025-04-29T08:51:04.765Z",
+      "color": "red",
+      "agree": false
+    },
+    {
+      "id": 1745917413334,
+      "fullName": "bach",
+      "email": "bach@gmail.com",
+      "age": "22",
+      "gender": "male",
+      "feedback": "kkjxkjjx",
+      "phoneNumber": "0346331968",
+      "dateOfBirth": "2025-04-29T09:03:02.067Z",
+      "rating": "8",
+      "today": "2025-04-29T09:03:02.067Z",
+      "color": "red",
+      "agree": true
+    },
+    {
+      "id": 1745917750428,
+      "fullName": "Bach",
+      "email": "Bach@gmail.com",
+      "age": "22",
+      "gender": "male",
+      "feedback": "Nánh",
+      "phoneNumber": "0346331968",
+      "dateOfBirth": "2025-04-29T09:08:05.750Z",
+      "rating": "7",
+      "today": "2025-04-29T09:08:05.750Z",
+      "color": "red",
+      "agree": true
+    },
+    {
+      "id": 1745917861545,
+      "fullName": "Ba",
+      "email": "B@gami.com",
+      "age": "22",
+      "gender": "male",
+      "feedback": "Hhshd",
+      "phoneNumber": "0346331968",
+      "dateOfBirth": "2025-04-29T09:10:31.606Z",
+      "rating": "1",
+      "today": "2025-04-29T09:10:31.606Z",
+      "color": "red",
+      "agree": false
+    }
+  ]
 }

@@ -6,8 +6,6 @@ import {
 } from "react-native";
 import { toastService } from "@/services/toast.services";
 import { Status } from "./useShowToast";
-import { ImageResponse } from "@/services/image.services";
-import { Movie } from "@/models/movie.model";
 import { useFocusEffect } from "@react-navigation/native";
 
 type UseSwiperProps<T> = {
@@ -27,8 +25,7 @@ export const useSwiper = <T,>({
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(!data || false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null); // time
-  const isUserInteracting = useRef<boolean>(false); // User scoll
-
+  const isUserInteracting = useRef<boolean>(false); // User scoll∂
   const scrollToIndex = (index: number) => {
     if (!swiperRef.current) {
       toastService.showToast(Status.error, "Do not have ref");
